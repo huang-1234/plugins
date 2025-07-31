@@ -22,7 +22,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      'performance-monitor': resolve(__dirname, '../libs/performance-monitor/src')
+      'perfor-monitor': resolve(__dirname, '../libs/perfor-monitor/src')
     }
   }
 });

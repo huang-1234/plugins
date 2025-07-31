@@ -37,4 +37,5 @@ export type MessageType =
   | { type: 'configUpdate'; config: LeakDetectionConfig }
   | { type: 'requestMemoryData'; tabId?: number }
   | { type: 'memoryDataResponse'; tabs: TabMemoryInfo[] }
-  | { type: 'leakDetected'; tabId: number; severity: 'warning' | 'critical'; details: string };
+  | { type: 'leakDetected'; tabId: number; severity: 'warning' | 'critical'; details: string }
+  | { type: 'requestConfig';   }

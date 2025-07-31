@@ -14,7 +14,7 @@
 - 注入到每个标签页中
 - 收集内存和性能数据
 - 监控DOM节点变化
-- 集成performance-monitor库
+- 集成perfor-monitor库
 
 #### Popup UI（用户界面）
 - 基于React 18构建
@@ -87,7 +87,7 @@ private calculateGrowthRate(samples: number[]): number {
 ### 3. 性能监控集成
 
 #### Core Web Vitals监控
-- 集成performance-monitor库
+- 集成perfor-monitor库
 - 监控FCP、LCP、TTI、FID、INP、CLS等指标
 - 使用PerformanceObserver API收集数据
 
@@ -142,7 +142,7 @@ function collectMemoryData() {
 ### 2. 性能监控适配
 
 ```typescript
-// 适配performance-monitor库到Chrome扩展
+// 适配perfor-monitor库到Chrome扩展
 export function initPerformanceMonitoring(): void {
   // 检查是否已经注入
   if ((window as any).__performanceMonitorInjected) return;

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { PerformanceMonitor } from 'performance-monitor';
-import { PerformanceJankStutter } from 'performance-monitor';
+import { PerformanceMonitor } from 'perfor-monitor';
+import { PerformanceJankStutter } from 'perfor-monitor';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import type { PerformanceMonitorMetrics, PerformancePanelMetrics } from 'performance-monitor';
+import type { PerformanceMonitorMetrics, PerformancePanelMetrics } from 'perfor-monitor';
 
 const TabContainer = styled.div`
   padding: 16px;
@@ -214,7 +214,7 @@ const PerformanceTab: React.FC = () => {
       largeJankThreshold: 100
     });
 
-    jankMonitor.onUpdate = (data: PerformancePanelMetrics) => {
+    jankMonitor.onUpdate = (data: any) => {
       chrome.runtime.sendMessage({
         type: 'jankMetrics',
         data

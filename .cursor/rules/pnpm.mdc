@@ -1,0 +1,12 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+
+## 依赖安装与包发布
+
+使用 pnpm 进行包安装管理
+使用 npm 发布本地包
+
+

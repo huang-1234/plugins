@@ -1,4 +1,4 @@
-// declare module 'performance-monitor' {
+// declare module 'perfor-monitor' {
 //   export interface IMonitorWarning {
 //     FCP?: number;
 //     LCP: number;
