@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Performance Monitor 浏览器示例</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .performance-panel {
+      background-color: #f5f5f5;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 20px;
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .metric-item {
+      background-color: white;
+      border-radius: 6px;
+      padding: 12px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .metric-item.warning {
+      border-left: 3px solid #ff9800;
+      background-color: #fff8e1;
+    }
+
+    .metric-label {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 4px;
+    }
+
+    .metric-value {
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .metric-item.warning .metric-value {
+      color: #e65100;
+    }
+
+    h1, h2, h3 {
+      color: #333;
+    }
+
+    button {
+      background-color: #1976d2;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 8px 16px;
+      font-size: 14px;
+      cursor: pointer;
+      margin-right: 8px;
+    }
+
+    button:hover {
+      background-color: #1565c0;
+    }
+
+    .controls {
+      margin-bottom: 20px;
+    }
+
+    #memory-leak-demo {
+      margin-top: 30px;
+      padding: 16px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Performance Monitor 浏览器示例</h1>
+
+    <div class="controls">
+      <button id="start-btn">开始监控</button>
+      <button id="report-btn">生成报告</button>
+      <button id="stop-btn">停止监控</button>
+    </div>
+
+    <div class="performance-panel">
+      <h3>Web性能指标</h3>
+      <div id="web-vitals" class="metrics-grid">
+        <div class="metric-item">
+          <div class="metric-label">FCP</div>
+          <div class="metric-value">加载中...</div>
+        </div>
+        <div class="metric-item">
+          <div class="metric-label">LCP</div>
+          <div class="metric-value">加载中...</div>
+        </div>
+        <div class="metric-item">
+          <div class="metric-label">TTI</div>
+          <div class="metric-value">加载中...</div>
+        </div>
+        <div class="metric-item">
+          <div class="metric-label">FID</div>
+          <div class="metric-value">加载中...</div>
+        </div>
+        <div class="metric-item">
+          <div class="metric-label">INP</div>
+          <div class="metric-value">加载中...</div>
+        </div>
+        <div class="metric-item">
+          <div class="metric-label">CLS</div>
+          <div class="metric-value">加载中...</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="performance-panel">
+      <h3>帧率与卡顿</h3>
+      <div id="jank-metrics" class="metrics-grid">
+        <div class="metric-item">
+          <div class="metric-label">FPS</div>
+          <div class="metric-value">加载中...</div>
+        </div>
+        <div class="metric-item">
+          <div class="metric-label">卡顿率</div>
+          <div class="metric-value">加载中...</div>
+        </div>
+        <div class="metric-item">
+          <div class="metric-label">小卡顿</div>
+          <div class="metric-value">加载中...</div>
+        </div>
+        <div class="metric-item">
+          <div class="metric-label">中卡顿</div>
+          <div class="metric-value">加载中...</div>
+        </div>
+        <div class="metric-item">
+          <div class="metric-label">大卡顿</div>
+          <div class="metric-value">加载中...</div>
+        </div>
+        <div class="metric-item">
+          <div class="metric-label">事件延迟</div>
+          <div class="metric-value">加载中...</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="memory-leak-demo">
+      <h3>内存泄漏演示</h3>
+      <p>点击下面的按钮模拟内存泄漏和卡顿情况</p>
+      <button id="create-leak-btn">创建内存泄漏</button>
+      <button id="create-jank-btn">模拟卡顿</button>
+    </div>
+  </div>
+
+  <!-- 引入UMD版本的库 -->
+  <script src="../dist/performance-monitor.min.js"></script>
+
+  <script>
+    // 全局变量
+    let monitor = null;
+    let jankMonitor = null;
+    let leakArray = [];
+
+    // 更新Web性能指标UI
+    function updateWebVitalsUI(metrics) {
+      const container = document.getElementById('web-vitals');
+      if (!container) return;
+
+      // 更新FCP
+      updateMetricItem(container, 'FCP', metrics.FCP, 'ms', metrics.FCP > 1800);
+
+      // 更新LCP
+      updateMetricItem(container, 'LCP', metrics.LCP, 'ms', metrics.LCP > 2500);
+
+      // 更新TTI
+      updateMetricItem(container, 'TTI', metrics.TTI, 'ms', metrics.TTI > 3500);
+
+      // 更新FID
+      updateMetricItem(container, 'FID', metrics.FID, 'ms', metrics.FID > 100);
+
+      // 更新INP
+      updateMetricItem(container, 'INP', metrics.INP, 'ms', metrics.INP > 200);
+
+      // 更新CLS
+      updateMetricItem(container, 'CLS', metrics.CLS?.toFixed(4), '', metrics.CLS > 0.1);
+    }
+
+    // 更新帧率与卡顿UI
+    function updateJankUI(data) {
+      const container = document.getElementById('jank-metrics');
+      if (!container) return;
+
+      // 更新FPS
+      updateMetricItem(container, 'FPS', data.fps, '', data.fps < 50);
+
+      // 更新卡顿率
+      updateMetricItem(container, '卡顿率', (data.jank.stutterRate * 100).toFixed(2), '%', data.jank.stutterRate > 0.1);
+
+      // 更新小卡顿
+      updateMetricItem(container, '小卡顿', data.jank.small);
+
+      // 更新中卡顿
+      updateMetricItem(container, '中卡顿', data.jank.medium);
+
+      // 更新大卡顿
+      updateMetricItem(container, '大卡顿', data.jank.large, '', data.jank.large > 0);
+
+      // 更新事件延迟
+      if (data.eventTiming) {
+        updateMetricItem(
+          container,
+          '事件延迟',
+          data.eventTiming.avgDelay.toFixed(2),
+          'ms',
+          data.eventTiming.avgDelay > 50
+        );
+      }
+    }
+
+    // 更新指标项
+    function updateMetricItem(container, label, value, unit = '', warning = false) {
+      const item = container.querySelector(`.metric-item:has(.metric-label:contains('${label}'))`);
+      if (!item) return;
+
+      const valueElement = item.querySelector('.metric-value');
+      if (!valueElement) return;
+
+      // 更新值
+      valueElement.textContent = value !== undefined && value !== null && value !== 0
+        ? `${value}${unit}`
+        : '未测量';
+
+      // 更新警告状态
+      if (warning) {
+        item.classList.add('warning');
+      } else {
+        item.classList.remove('warning');
+      }
+    }
+
+    // 开始监控
+    function startMonitoring() {
+      // 创建性能监控实例
+      monitor = new PerformanceMonitor.PerformanceMonitor({
+        appId: 'browser-demo',
+        debug: true,
+        isDev: true,
+        deviceType: 'auto',
+        warnings: {
+          FCP: 1800,
+          LCP: 2500,
+          TTI: 3500,
+          FID: 100,
+          INP: 200,
+          CLS: 0.1,
+        },
+        pageInfo: {
+          pageUrl: window.location.href,
+          pageTitle: document.title,
+          routeId: 'demo-page',
+        }
+      });
+
+      // 创建帧率监控实例
+      jankMonitor = new PerformanceMonitor.PerformanceJankStutter({
+        updateInterval: 1000
+      });
+
+      // 启动监控
+      monitor.start();
+      jankMonitor.startMonitoring();
+
+      // 设置帧率监控回调
+      jankMonitor.onUpdate = updateJankUI;
+
+      // 定期更新Web性能指标
+      window.monitorInterval = setInterval(() => {
+        updateWebVitalsUI(monitor.metrics);
+      }, 1000);
+
+      alert('监控已启动');
+    }
+
+    // 生成报告
+    function generateReport() {
+      if (!monitor) {
+        alert('请先启动监控');
+        return;
+      }
+
+      monitor.report();
+      alert('报告已生成，请查看控制台');
+    }
+
+    // 停止监控
+    function stopMonitoring() {
+      if (monitor) {
+        monitor.dispose();
+        monitor = null;
+      }
+
+      if (jankMonitor) {
+        jankMonitor.stopMonitoring();
+        jankMonitor = null;
+      }
+
+      if (window.monitorInterval) {
+        clearInterval(window.monitorInterval);
+        window.monitorInterval = null;
+      }
+
+      alert('监控已停止');
+    }
+
+    // 创建内存泄漏
+    function createMemoryLeak() {
+      // 创建1MB的数组并保存在全局变量中
+      const size = 1024 * 1024;
+      for (let i = 0; i < 10; i++) {
+        const array = new Array(size).fill('leak');
+        leakArray.push(array);
+      }
+
+      alert(`已创建约10MB的内存泄漏，当前泄漏总量：${leakArray.length * 10}MB`);
+    }
+
+    // 模拟卡顿
+    function createJank() {
+      alert('将执行耗时操作，可能导致页面卡顿');
+
+      // 执行耗时操作
+      const start = performance.now();
+      while (performance.now() - start < 500) {
+        // 空循环，阻塞主线程500ms
+        const dummy = Math.random() * 10000;
+      }
+    }
+
+    // 绑定事件
+    document.getElementById('start-btn').addEventListener('click', startMonitoring);
+    document.getElementById('report-btn').addEventListener('click', generateReport);
+    document.getElementById('stop-btn').addEventListener('click', stopMonitoring);
+    document.getElementById('create-leak-btn').addEventListener('click', createMemoryLeak);
+    document.getElementById('create-jank-btn').addEventListener('click', createJank);
+
+    // 修复CSS选择器
+    if (!Element.prototype.matches) {
+      Element.prototype.matches = Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector;
+    }
+
+    if (!Element.prototype.closest) {
+      Element.prototype.closest = function(s) {
+        var el = this;
+        do {
+          if (el.matches(s)) return el;
+          el = el.parentElement || el.parentNode;
+        } while (el !== null && el.nodeType === 1);
+        return null;
+      };
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+{
+  "name": "performance-monitor",
+  "version": "1.0.0",
+  "description": "性能监控工具库，用于监控Web应用的性能指标和帧率卡顿",
+  "type": "module",
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "unpkg": "dist/performance-monitor.min.js",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "docs:dev": "rspress dev",
+    "docs:build": "rspress build",
+    "docs:preview": "rspress preview",
+    "docs:serve": "rspress serve",
+    "dev": "rollup -c -w",
+    "test": "vitest run",
+    "clean": "rimraf dist",
+    "prebuild": "rimraf dist",
+    "build": "cross-env NODE_ENV=production rollup -c",
+    "postbuild": "node scripts/verify-build.js",
+    "prepublishOnly": "npm run build",
+    "prepublishOnlyAndTest": "npm run test && npm run build",
+    "release": "node ../../scripts/publish.js --tag alpha --name performance-monitor",
+    "release:beta": "node ../../scripts/publish.js --tag beta --name performance-monitor",
+    "release:rc": "node ../../scripts/publish.js --tag rc --name performance-monitor",
+    "release:prod": "node ../../scripts/publish.js --tag latest --name performance-monitor"
+  },
+  "peerDependencies": {
+    "react": ">=16.9.0",
+    "react-dom": ">=16.9.0"
+  },
+  "keywords": [
+    "performance",
+    "monitor",
+    "web vitals",
+    "fps",
+    "jank"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^11.1.6",
+    "@testing-library/react": "16.3.0",
+    "@testing-library/user-event": "14.6.1",
+    "@types/jsdom": "21.1.7",
+    "@types/react": "^18.2.47",
+    "@types/react-dom": "^18.2.18",
+    "cross-env": "^10.0.0",
+    "jsdom": "26.1.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-intersection-observer": "9.16.0",
+    "rimraf": "6.0.1",
+    "rollup": "^4.9.5",
+    "rollup-plugin-dts": "^6.1.0",
+    "tslib": "^2.6.2",
+    "typescript": "^5.3.3",
+    "vitest": "3.2.4"
+  }
+}
