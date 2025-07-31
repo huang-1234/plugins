@@ -1,187 +1,198 @@
 # Performance Monitor
 
-一个用于监控Web应用性能指标和帧率卡顿的JavaScript库。
+一个用于监控网页性能指标和卡顿检测的工具库。
 
-## 特性
+## 功能特点
 
-- 监控Core Web Vitals (FCP, LCP, CLS, FID, INP等)
-- 帧率(FPS)监控和卡顿检测
-- 事件响应延迟分析
-- 自定义性能指标阈值
-- 支持React组件和原生JavaScript API
+- 📊 监控核心Web Vitals指标 (FCP, LCP, TTI, FID, INP, CLS)
+- 🔍 检测页面卡顿和帧率下降
+- 📱 自动适配移动端和桌面端设备
+- 📈 提供实时性能数据报告
+- 🚀 支持React集成
 
 ## 安装
 
 ```bash
-# npm
 npm install performance-monitor
-
-# yarn
+# 或
 yarn add performance-monitor
-
-# pnpm
+# 或
 pnpm add performance-monitor
 ```
 
-## 使用方法
+## 基本使用
 
-### 基本用法
+### 性能监控
 
 ```javascript
 import { PerformanceMonitor } from 'performance-monitor';
 
 // 创建监控实例
 const monitor = new PerformanceMonitor({
-  appId: 'my-app',
-  debug: true,
+  appId: 'your-app-id',
+  reportUrl: '/api/performance', // 可选，性能数据上报地址
+  debug: true, // 开发环境建议开启，会在控制台输出调试信息
   isDev: process.env.NODE_ENV !== 'production',
-  deviceType: 'auto',
+  warnings: {
+    FCP: 2000, // 首次内容绘制阈值 (ms)
+    LCP: 2500, // 最大内容绘制阈值 (ms)
+    TTI: 5000, // 可交互时间阈值 (ms)
+    FID: 100,  // 首次输入延迟阈值 (ms)
+    INP: 200,  // 交互延迟阈值 (ms)
+    CLS: 0.1,  // 累积布局偏移阈值
+  },
   pageInfo: {
     pageUrl: window.location.href,
-    pageTitle: document.title
+    pageTitle: document.title,
+    routeId: 'home-page' // 可选，用于标识不同页面
   }
 });
 
 // 启动监控
 monitor.start();
 
-// 获取性能报告
-setTimeout(() => {
-  monitor.report();
-}, 3000);
+// 手动触发报告（通常不需要，会在页面卸载时自动触发）
+monitor.report();
 
 // 清理资源
-window.addEventListener('beforeunload', () => {
-  monitor.dispose();
-});
+monitor.dispose();
 ```
 
-### 帧率和卡顿监控
+### 卡顿监控
 
 ```javascript
 import { PerformanceJankStutter } from 'performance-monitor';
 
-// 创建帧率监控实例
+// 创建卡顿监控实例
 const jankMonitor = new PerformanceJankStutter({
-  updateInterval: 1000 // 每秒更新一次
+  updateInterval: 1000,    // 数据更新间隔 (ms)
+  minJankThreshold: 50,    // 小卡顿阈值 (ms)
+  largeJankThreshold: 100  // 大卡顿阈值 (ms)
 });
 
-// 设置回调函数
+// 设置数据更新回调
 jankMonitor.onUpdate = (data) => {
   console.log('FPS:', data.fps);
   console.log('卡顿率:', data.jank.stutterRate);
-  console.log('卡顿次数:', data.jank.small, data.jank.medium, data.jank.large);
+  console.log('小卡顿次数:', data.jank.small);
+  console.log('中卡顿次数:', data.jank.medium);
+  console.log('大卡顿次数:', data.jank.large);
 };
 
 // 启动监控
 jankMonitor.startMonitoring();
 
-// 清理资源
-window.addEventListener('beforeunload', () => {
-  jankMonitor.stopMonitoring();
-});
+// 停止监控
+jankMonitor.stopMonitoring();
 ```
 
-### React Hooks
+## React中使用
 
 ```jsx
-import { useJankStutter } from 'performance-monitor';
+import React, { useEffect } from 'react';
+import { PerformanceMonitor, PerformanceJankStutter } from 'performance-monitor';
 
-function MyComponent() {
-  const { panelJank } = useJankStutter();
+function App() {
+  useEffect(() => {
+    // 初始化性能监控
+    const performanceMonitor = new PerformanceMonitor({
+      appId: 'react-app',
+      reportUrl: '/api/performance',
+      debug: true,
+      isDev: process.env.NODE_ENV !== 'production',
+      // ...其他配置
+    });
 
-  // 组件卸载时会自动清理资源
+    performanceMonitor.start();
+
+    // 初始化卡顿监控
+    const jankMonitor = new PerformanceJankStutter();
+    jankMonitor.startMonitoring();
+
+    // 组件卸载时清理
+    return () => {
+      performanceMonitor.dispose();
+      jankMonitor.stopMonitoring();
+    };
+  }, []);
 
   return (
     <div>
-      {/* 您的组件内容 */}
+      <h1>My App</h1>
+      {/* 应用内容 */}
     </div>
   );
 }
 ```
 
-## API参考
+## 浏览器直接使用
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Performance Monitor Demo</title>
+</head>
+<body>
+  <!-- 引入UMD格式的库 -->
+  <script src="path/to/performance-monitor.min.js"></script>
+
+  <script>
+    // 使用全局变量 PerformanceMonitor
+    const monitor = new PerformanceMonitor.PerformanceMonitor({
+      appId: 'browser-app',
+      // ...其他配置
+    });
+
+    monitor.start();
+  </script>
+</body>
+</html>
+```
+
+## API文档
 
 ### PerformanceMonitor
 
-监控Web性能指标的主类。
+#### 配置选项
 
-#### 构造函数选项
-
-```typescript
-interface PerformanceMonitorOps {
-  warnings: {
-    FCP?: number;  // 首次内容绘制阈值 (ms)
-    LCP: number;   // 最大内容绘制阈值 (ms)
-    TTI?: number;  // 可交互时间阈值 (ms)
-    FID?: number;  // 首次输入延迟阈值 (ms)
-    INP?: number;  // 交互到下一次绘制阈值 (ms)
-    CLS?: number;  // 累积布局偏移阈值
-  };
-  reportUrl: string;  // 性能数据上报URL
-  appId: string;      // 应用ID
-  debug?: boolean;    // 是否开启调试模式
-  isDev?: boolean;    // 是否为开发环境
-  maxTime?: number;   // 最大监控时间 (ms)
-  deviceType?: 'mobile' | 'desktop' | 'auto';
-  networkType?: string;
-  pageInfo?: {
-    pageUrl: string;
-    pageTitle: string;
-    routeId?: string;
-  };
-}
-```
+| 选项 | 类型 | 描述 |
+|------|------|------|
+| `appId` | string | 应用ID，用于标识不同应用 |
+| `reportUrl` | string | 性能数据上报地址 |
+| `debug` | boolean | 是否输出调试信息 |
+| `isDev` | boolean | 是否为开发环境 |
+| `maxTime` | number | 最大监控时间(ms) |
+| `deviceType` | 'mobile' \| 'desktop' \| 'auto' | 设备类型 |
+| `warnings` | object | 性能指标警告阈值 |
+| `pageInfo` | object | 页面信息 |
 
 #### 方法
 
-- `start()`: 开始监控
-- `report()`: 生成并发送性能报告
-- `dispose()`: 清理资源
+| 方法 | 描述 |
+|------|------|
+| `start()` | 启动性能监控 |
+| `report()` | 生成并发送性能报告 |
+| `dispose()` | 清理资源 |
 
 ### PerformanceJankStutter
 
-监控帧率和卡顿的类。
+#### 配置选项
 
-#### 构造函数选项
-
-```typescript
-interface JankStutterOptions {
-  frame?: number;                // 帧率 (ms)
-  deviceRefreshRate?: number;    // 设备刷新率 (Hz)
-  minJankThreshold?: number;     // 小卡顿阈值 (ms)
-  largeJankThreshold?: number;   // 大卡顿阈值 (ms)
-  updateInterval?: number;       // 数据更新间隔 (ms)
-}
-```
+| 选项 | 类型 | 描述 |
+|------|------|------|
+| `frame` | number | 帧率(ms)，默认16.67 |
+| `deviceRefreshRate` | number | 设备刷新率(Hz)，默认60 |
+| `minJankThreshold` | number | 小卡顿阈值(ms)，默认50 |
+| `largeJankThreshold` | number | 大卡顿阈值(ms)，默认100 |
+| `updateInterval` | number | 数据更新间隔(ms)，默认1000 |
 
 #### 方法
 
-- `startMonitoring()`: 开始监控
-- `stopMonitoring()`: 停止监控
-
-#### 回调
-
-- `onUpdate`: 数据更新回调函数，接收性能指标数据
-
-## 构建和开发
-
-```bash
-# 安装依赖
-pnpm install
-
-# 开发模式
-pnpm run dev
-
-# 构建库
-pnpm run build
-
-# 运行测试
-pnpm run test
-
-# 构建文档
-pnpm run docs:build
-```
+| 方法 | 描述 |
+|------|------|
+| `startMonitoring()` | 启动卡顿监控 |
+| `stopMonitoring()` | 停止卡顿监控 |
 
 ## 许可证
 

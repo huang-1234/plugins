@@ -1,23 +1,70 @@
 #!/bin/bash
+set -e
 
-# 安装依赖
-echo "安装依赖..."
-pnpm install
+# 颜色定义
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+RED='\033[0;31m'
+NC='\033[0m' # No Color
 
-# 清理dist目录
-echo "清理dist目录..."
-pnpm run clean
+echo -e "${YELLOW}开始构建 performance-monitor 包...${NC}"
 
-# 运行构建
-echo "开始构建..."
-pnpm run build
-
-# 检查构建结果
-if [ -d "dist" ]; then
-  echo "构建成功！"
-  echo "输出文件:"
-  ls -la dist/
-else
-  echo "构建失败！"
+# 检查环境
+echo -e "${YELLOW}检查环境...${NC}"
+if ! command -v node &> /dev/null; then
+  echo -e "${RED}错误: Node.js 未安装${NC}"
   exit 1
 fi
+
+if ! command -v npm &> /dev/null; then
+  echo -e "${RED}错误: npm 未安装${NC}"
+  exit 1
+fi
+
+# 显示Node和npm版本
+echo -e "${GREEN}Node.js 版本:${NC} $(node -v)"
+echo -e "${GREEN}npm 版本:${NC} $(npm -v)"
+
+# 清理旧的构建文件
+echo -e "${YELLOW}清理旧的构建文件...${NC}"
+npm run clean
+
+# 安装依赖
+echo -e "${YELLOW}安装依赖...${NC}"
+npm install
+
+# 运行测试
+echo -e "${YELLOW}运行测试...${NC}"
+npm test || {
+  echo -e "${RED}测试失败，但继续构建...${NC}"
+}
+
+# 构建库
+echo -e "${YELLOW}构建库...${NC}"
+NODE_ENV=production npm run build
+
+# 检查构建结果
+if [ -d "dist" ] && [ "$(ls -A dist)" ]; then
+  echo -e "${GREEN}构建成功！${NC}"
+  echo -e "${YELLOW}构建输出:${NC}"
+  ls -la dist/
+else
+  echo -e "${RED}构建失败：dist 目录为空或不存在${NC}"
+  exit 1
+fi
+
+# 生成示例
+echo -e "${YELLOW}生成示例...${NC}"
+mkdir -p examples/dist
+cp -r dist/* examples/dist/
+
+# 构建完成
+echo -e "${GREEN}✅ performance-monitor 构建完成!${NC}"
+echo -e "${GREEN}构建输出位于: $(pwd)/dist/${NC}"
+echo -e "${GREEN}示例文件位于: $(pwd)/examples/${NC}"
+
+# 使用说明
+echo -e "${YELLOW}使用说明:${NC}"
+echo -e "  - ESM:  import { PerformanceMonitor } from 'performance-monitor';"
+echo -e "  - CommonJS: const { PerformanceMonitor } = require('performance-monitor');"
+echo -e "  - 浏览器: <script src=\"performance-monitor.min.js\"></script>"

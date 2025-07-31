@@ -1,44 +1,54 @@
 import { defineConfig } from 'rollup';
 import typescript from '@rollup/plugin-typescript';
+import terser from '@rollup/plugin-terser';
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
-import terser from '@rollup/plugin-terser';
 import dts from 'rollup-plugin-dts';
 import pkg from './package.json' assert { type: 'json' };
 
+const isProd = process.env.NODE_ENV === 'production';
+
+// 外部依赖，不打包进最终文件
 const external = [
   ...Object.keys(pkg.peerDependencies || {}),
   'react/jsx-runtime'
 ];
 
+// 共享插件
+const commonPlugins = [
+  resolve(),
+  commonjs(),
+  typescript({
+    tsconfig: './tsconfig.build.json',
+  }),
+];
+
+// 生产环境添加代码压缩
+const prodPlugins = isProd ? [terser()] : [];
+
 export default defineConfig([
-  // ESM 和 CJS 构建
+  // ESM 格式打包
   {
     input: 'src/index.ts',
     output: [
       {
-        file: 'dist/index.js',
+        file: 'dist/index.mjs',
         format: 'esm',
-        sourcemap: true
+        sourcemap: true,
       },
       {
         file: 'dist/index.cjs',
         format: 'cjs',
-        sourcemap: true
-      }
+        sourcemap: true,
+      },
     ],
     external,
     plugins: [
-      resolve(),
-      commonjs(),
-      typescript({
-        tsconfig: './tsconfig.build.json',
-        declaration: true,
-        declarationDir: 'dist/types'
-      })
-    ]
+      ...commonPlugins,
+      ...prodPlugins,
+    ],
   },
-  // UMD 构建 (浏览器可用，包含所有依赖)
+  // UMD 格式打包 (用于CDN/浏览器直接使用)
   {
     input: 'src/index.ts',
     output: {
@@ -48,26 +58,22 @@ export default defineConfig([
       sourcemap: true,
       globals: {
         'react': 'React',
-        'react-dom': 'ReactDOM'
-      }
+        'react-dom': 'ReactDOM',
+      },
     },
-    external: ['react', 'react-dom'],
+    external,
     plugins: [
-      resolve(),
-      commonjs(),
-      typescript({
-        tsconfig: './tsconfig.build.json',
-      }),
-      terser()
-    ]
+      ...commonPlugins,
+      ...prodPlugins,
+    ],
   },
-  // 类型定义文件
+  // 类型声明文件打包
   {
-    input: 'dist/types/index.d.ts',
+    input: 'src/index.ts',
     output: {
       file: 'dist/index.d.ts',
-      format: 'es'
+      format: 'es',
     },
-    plugins: [dts()]
-  }
+    plugins: [dts()],
+  },
 ]);
