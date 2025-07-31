@@ -1,5 +1,5 @@
 {
-  "name": "performance-monitor",
+  "name": "perfor-monitor",
   "version": "1.0.0",
   "description": "性能监控工具库",
   "main": "dist/index.cjs",
@@ -34,10 +34,21 @@
     "build:all": "npm run clean && npm run test && npm run build && npm run docs:build",
     "prepublishOnly": "npm run build",
     "prepublishOnlyAndTest": "npm run test && npm run build",
-    "release": "node ../../scripts/publish.js --tag alpha --name performance-monitor",
-    "release:beta": "node ../../scripts/publish.js --tag beta --name performance-monitor",
-    "release:rc": "node ../../scripts/publish.js --tag rc --name performance-monitor",
-    "release:prod": "node ../../scripts/publish.js --tag latest --name performance-monitor"
+    "release": "node ../../scripts/publish.js --tag alpha --name perfor-monitor",
+    "release:beta": "node ../../scripts/publish.js --tag beta --name perfor-monitor",
+    "release:rc": "node ../../scripts/publish.js --tag rc --name perfor-monitor",
+    "release:prod": "node ../../scripts/publish.js --tag latest --name perfor-monitor",
+    "build:pnpm": "pnpm run build",
+    "build:npm": "npm run build",
+    "publish:test": "node scripts/build-and-publish.js --dry-run",
+    "publish:npm": "node scripts/build-and-publish.js",
+    "publish:beta": "node scripts/build-and-publish.js --tag=beta",
+    "publish:alpha": "node scripts/build-and-publish.js --tag=alpha",
+    "publish:next": "node scripts/build-and-publish.js --tag=next",
+    "publish:simple": "node publish.js",
+    "publish:dry": "node publish.js --dry-run",
+    "publish:quick": "node publish.js --skip-test --skip-build",
+    "publish:tag": "node publish.js --create-git-tag"
   },
   "peerDependencies": {
     "react": ">=16.9.0",

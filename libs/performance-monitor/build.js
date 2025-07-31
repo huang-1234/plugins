@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * performance-monitor 高级构建脚本
+ * perfor-monitor 高级构建脚本
  *
  * 用法:
  *   node build.js [选项]
@@ -98,7 +98,7 @@ function run(command, options = {}) {
 }
 
 // 开始构建流程
-logHeader(`开始构建 performance-monitor (${options.mode} 模式)`);
+logHeader(`开始构建 perfor-monitor (${options.mode} 模式)`);
 
 // 检查环境
 log('检查环境...', colors.yellow);
@@ -159,9 +159,9 @@ if (options.analyze) {
 logHeader('构建完成');
 log(`构建输出位于: ${path.join(__dirname, 'dist')}`, colors.green);
 log('使用说明:', colors.yellow);
-log('  - ESM:  import { PerformanceMonitor } from \'performance-monitor\';');
-log('  - CommonJS: const { PerformanceMonitor } = require(\'performance-monitor\');');
-log('  - 浏览器: <script src="performance-monitor.min.js"></script>');
+log('  - ESM:  import { PerformanceMonitor } from \'perfor-monitor\';');
+log('  - CommonJS: const { PerformanceMonitor } = require(\'perfor-monitor\');');
+log('  - 浏览器: <script src="perfor-monitor.min.js"></script>');
 
 if (options.watch) {
   log('\n监视模式已启动，按 Ctrl+C 停止...', colors.yellow);
