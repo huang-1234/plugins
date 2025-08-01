@@ -40,7 +40,7 @@ describe('FileUploader', () => {
 
   test('应该正确渲染', () => {
     render(<FileUploader baseUrl="http://test-api.com" />);
-    
+
     // 检查按钮是否存在
     expect(screen.getByRole('button', { name: /选择文件/i })).toBeInTheDocument();
   });
@@ -51,26 +51,26 @@ describe('FileUploader', () => {
     const onProgress = vi.fn();
 
     render(
-      <FileUploader 
+      <FileUploader
         baseUrl="http://test-api.com"
         onSuccess={onSuccess}
         onError={onError}
         onProgress={onProgress}
       />
     );
-    
+
     // 获取文件输入
     const fileInput = screen.getByTitle('选择要上传的文件');
-    
+
     // 模拟文件选择
     const file = new File(['test content'], 'test.txt', { type: 'text/plain' });
     fireEvent.change(fileInput, { target: { files: [file] } });
-    
+
     // 等待上传完成
     await waitFor(() => {
       expect(onSuccess).toHaveBeenCalled();
     });
-    
+
     // 验证回调
     expect(onSuccess).toHaveBeenCalledWith(expect.objectContaining({
       status: UploadStatus.SUCCESS,
@@ -96,7 +96,7 @@ describe('FileUploader', () => {
                 totalChunks: 2
               });
             }, 10);
-            
+
             return {
               controller: {
                 pause: vi.fn(),
@@ -122,19 +122,19 @@ describe('FileUploader', () => {
     });
 
     render(<FileUploader baseUrl="http://test-api.com" />);
-    
+
     // 获取文件输入
     const fileInput = screen.getByTitle('选择要上传的文件');
-    
+
     // 模拟文件选择
     const file = new File(['test content'], 'test.txt', { type: 'text/plain' });
     fireEvent.change(fileInput, { target: { files: [file] } });
-    
+
     // 等待进度显示
     await waitFor(() => {
       expect(screen.getByText(/上传进度:/)).toBeInTheDocument();
     });
-    
+
     // 等待上传完成
     await waitFor(() => {
       expect(screen.getByText(/上传成功/)).toBeInTheDocument();
@@ -171,19 +171,19 @@ describe('FileUploader', () => {
 
     const onError = vi.fn();
     render(<FileUploader baseUrl="http://test-api.com" onError={onError} />);
-    
+
     // 获取文件输入
     const fileInput = screen.getByTitle('选择要上传的文件');
-    
+
     // 模拟文件选择
     const file = new File(['test content'], 'test.txt', { type: 'text/plain' });
     fireEvent.change(fileInput, { target: { files: [file] } });
-    
+
     // 等待错误显示
     await waitFor(() => {
       expect(screen.getByText(/错误:/)).toBeInTheDocument();
     });
-    
+
     // 验证回调
     expect(onError).toHaveBeenCalled();
   });
