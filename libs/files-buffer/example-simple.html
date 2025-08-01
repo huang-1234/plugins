@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Files-Buffer BasicExample 示例</title>
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        margin: 0;
+        padding: 20px;
+        background-color: #f5f5f5;
+      }
+      .example-container {
+        max-width: 800px;
+        margin: 0 auto;
+        background: white;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+      .result-container {
+        margin-top: 20px;
+        padding: 15px;
+        background-color: #e8f5e8;
+        border-radius: 6px;
+        border-left: 4px solid #4caf50;
+      }
+      .error-container {
+        margin-top: 20px;
+        padding: 15px;
+        background-color: #ffebee;
+        border-radius: 6px;
+        border-left: 4px solid #f44336;
+      }
+      h2 {
+        color: #333;
+        margin-bottom: 20px;
+      }
+      h3 {
+        color: #555;
+        margin-bottom: 10px;
+      }
+      p {
+        margin: 5px 0;
+        color: #666;
+      }
+      .upload-button {
+        background-color: #2196f3;
+        color: white;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        margin: 10px 0;
+        transition: background-color 0.3s;
+      }
+      .upload-button:hover {
+        background-color: #1976d2;
+      }
+      .upload-button:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+      }
+      .progress-bar {
+        width: 100%;
+        height: 20px;
+        background-color: #f0f0f0;
+        border-radius: 10px;
+        overflow: hidden;
+        margin: 10px 0;
+      }
+      .progress-fill {
+        height: 100%;
+        background-color: #4caf50;
+        transition: width 0.3s ease;
+      }
+      .file-info {
+        margin: 15px 0;
+        padding: 15px;
+        background-color: #f8f9fa;
+        border-radius: 6px;
+        border-left: 4px solid #2196f3;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="example-container">
+      <h2>大文件分片上传示例</h2>
+
+      <div class="file-info">
+        <p><strong>功能说明：</strong></p>
+        <ul>
+          <li>支持大文件分片上传（默认 5MB 分片）</li>
+          <li>支持断点续传功能</li>
+          <li>支持秒传功能（基于文件哈希）</li>
+          <li>并发上传控制（默认 3 个并发）</li>
+          <li>实时进度显示</li>
+          <li>文件大小限制：1GB</li>
+        </ul>
+      </div>
+
+      <div>
+        <button class="upload-button" onclick="selectFile()">选择文件</button>
+        <input
+          type="file"
+          id="fileInput"
+          style="display: none"
+          onchange="handleFileSelect(event)"
+        />
+      </div>
+
+      <div id="progressContainer" style="display: none">
+        <p>上传进度：</p>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+        </div>
+        <p id="progressText">0%</p>
+      </div>
+
+      <div id="resultContainer" class="result-container" style="display: none">
+        <h3>上传结果</h3>
+        <p id="resultStatus">状态: 上传成功</p>
+        <p id="resultFileName">文件名:</p>
+        <p id="resultFileSize">文件大小:</p>
+        <p id="resultFileHash">文件哈希:</p>
+      </div>
+
+      <div id="errorContainer" class="error-container" style="display: none">
+        <h3>上传失败</h3>
+        <p id="errorMessage"></p>
+      </div>
+    </div>
+
+    <script>
+      function selectFile() {
+        document.getElementById("fileInput").click();
+      }
+
+      function handleFileSelect(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        // 检查文件大小
+        const maxSize = 1024 * 1024 * 1024; // 1GB
+        if (file.size > maxSize) {
+          showError(
+            `文件大小超过限制 (${(maxSize / 1024 / 1024).toFixed(2)}MB)`
+          );
+          return;
+        }
+
+        // 模拟上传过程
+        simulateUpload(file);
+      }
+
+      function simulateUpload(file) {
+        const progressContainer = document.getElementById("progressContainer");
+        const progressFill = document.getElementById("progressFill");
+        const progressText = document.getElementById("progressText");
+
+        progressContainer.style.display = "block";
+        hideResult();
+        hideError();
+
+        let progress = 0;
+        const interval = setInterval(() => {
+          progress += Math.random() * 10;
+          if (progress >= 100) {
+            progress = 100;
+            clearInterval(interval);
+            showResult(file);
+          }
+
+          progressFill.style.width = progress + "%";
+          progressText.textContent = Math.round(progress) + "%";
+        }, 200);
+      }
+
+      function showResult(file) {
+        const resultContainer = document.getElementById("resultContainer");
+        const resultFileName = document.getElementById("resultFileName");
+        const resultFileSize = document.getElementById("resultFileSize");
+        const resultFileHash = document.getElementById("resultFileHash");
+
+        resultFileName.textContent = `文件名: ${file.name}`;
+        resultFileSize.textContent = `文件大小: ${(
+          file.size /
+          1024 /
+          1024
+        ).toFixed(2)} MB`;
+        resultFileHash.textContent = `文件哈希: ${generateHash(file.name)}`;
+
+        resultContainer.style.display = "block";
+        document.getElementById("progressContainer").style.display = "none";
+      }
+
+      function showError(message) {
+        const errorContainer = document.getElementById("errorContainer");
+        const errorMessage = document.getElementById("errorMessage");
+
+        errorMessage.textContent = message;
+        errorContainer.style.display = "block";
+        hideResult();
+      }
+
+      function hideResult() {
+        document.getElementById("resultContainer").style.display = "none";
+      }
+
+      function hideError() {
+        document.getElementById("errorContainer").style.display = "none";
+      }
+
+      function generateHash(filename) {
+        // 简单的哈希生成（实际使用中会使用 spark-md5）
+        return (
+          "hash_" + filename.replace(/[^a-zA-Z0-9]/g, "") + "_" + Date.now()
+        );
+      }
+    </script>
+  </body>
+</html>
