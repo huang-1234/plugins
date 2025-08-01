@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { PerformanceMonitor } from 'performance-monitor';
-import { PerformanceJankStutter } from 'performance-monitor';
+import { PerformanceMonitor } from 'perfor-monitor';
+import { PerformanceJankStutter } from 'perfor-monitor';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import type { PerformanceMonitorMetrics, PerformancePanelMetrics } from 'performance-monitor';
+import type { PerformanceMonitorMetrics, PerformancePanelMetrics } from 'perfor-monitor';
 
 const TabContainer = styled.div`
   padding: 16px;
@@ -199,11 +199,20 @@ const PerformanceTab: React.FC = () => {
 
     performanceMonitor.start();
 
-    // 定期向扩展发送性能数据
+        // 定期向扩展发送性能数据
     setInterval(() => {
+      // 获取当前性能指标
+      const metrics = performanceMonitor;
       chrome.runtime.sendMessage({
         type: 'performanceMetrics',
-        data: performanceMonitor.metrics
+        data: {
+          FCP: metrics.metrics?.FCP || 0,
+          LCP: metrics.metrics?.LCP || 0,
+          TTI: metrics.metrics?.TTI || 0,
+          FID: metrics.metrics?.FID || 0,
+          INP: metrics.metrics?.INP || 0,
+          CLS: metrics.metrics?.CLS || 0
+        }
       });
     }, 1000);
 

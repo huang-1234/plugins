@@ -1,5 +1,5 @@
 @echo off
-echo 开始构建 performance-monitor 包...
+echo 开始构建 perfor-monitor 包...
 
 REM 检查环境
 echo 检查环境...
@@ -57,12 +57,12 @@ if not exist "examples\dist" mkdir examples\dist
 xcopy /E /I /Y dist\* examples\dist\
 
 REM 构建完成
-echo ✅ performance-monitor 构建完成!
+echo ✅ perfor-monitor 构建完成!
 echo 构建输出位于: %CD%\dist\
 echo 示例文件位于: %CD%\examples\
 
 REM 使用说明
 echo 使用说明:
-echo   - ESM:  import { PerformanceMonitor } from 'performance-monitor';
-echo   - CommonJS: const { PerformanceMonitor } = require('performance-monitor');
-echo   - 浏览器: ^<script src="performance-monitor.min.js"^>^</script^>
+echo   - ESM:  import { PerformanceMonitor } from 'perfor-monitor';
+echo   - CommonJS: const { PerformanceMonitor } = require('perfor-monitor');
+echo   - 浏览器: ^<script src="perfor-monitor.min.js"^>^</script^>

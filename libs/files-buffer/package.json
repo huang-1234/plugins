@@ -1,0 +1,51 @@
+{
+  "name": "files-buffer",
+  "version": "1.0.0",
+  "description": "大文件分片上传库，支持断点续传、秒传功能",
+  "keywords": ["file", "upload", "chunk", "resume", "react"],
+  "author": "AI Code Team",
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "main": "./dist/index.cjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rslib build",
+    "check": "biome check --write",
+    "dev": "rslib build --watch",
+    "format": "biome format --write",
+    "test": "vitest run",
+    "prepublishOnly": "npm run test && npm run build",
+    "publish-npm": "npm publish --access public",
+    "build-and-publish": "node ./scripts/build-and-publish.js"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.0.6",
+    "@rslib/core": "^0.11.0",
+    "@testing-library/jest-dom": "^6.4.6",
+    "@testing-library/react": "^14.2.1",
+    "@types/node": "20.19.9",
+    "@types/react": "18.2.15",
+    "@types/react-dom": "18.2.7",
+    "@types/spark-md5": "^3.0.5",
+    "jsdom": "^24.0.0",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "typescript": "5.8.3",
+    "vitest": "3.2.4"
+  },
+  "private": false,
+  "dependencies": {
+    "axios": "^1.7.0",
+    "spark-md5": "^3.0.2"
+  }
+}
