@@ -1,0 +1,32 @@
+{
+  "name": "files-buffer-koa-server",
+  "version": "1.0.0",
+  "description": "大文件分片上传Koa服务端示例",
+  "main": "server-koa-example.js",
+  "scripts": {
+    "start": "node server-koa-example.js",
+    "dev": "nodemon server-koa-example.js"
+  },
+  "private": true,
+  "dependencies": {
+    "antd": "5.26.7",
+    "@ant-design/icons": "6.0.0",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "koa": "2.16.2",
+    "koa-body": "6.0.1",
+    "koa-cors": "0.0.16",
+    "koa-router": "12.0.1",
+    "koa-send": "5.0.1"
+  },
+  "devDependencies": {
+    "@types/koa-bodyparser": "4.3.10",
+    "@types/koa-cors": "0.0.4",
+    "@types/koa-jwt": "3.3.0",
+    "@types/koa-router": "7.4.5",
+    "@types/koa-send": "5.0.0",
+    "@types/koa-static": "5.0.0",
+    "@types/koa": "2.15.0",
+    "nodemon": "3.0.1"
+  }
+}

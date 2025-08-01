@@ -15,19 +15,19 @@ importers:
         specifier: 5.26.7
         version: 5.26.7(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       axios:
-        specifier: ^1.5.0
+        specifier: 1.11.0
         version: 1.11.0
       cross-env:
-        specifier: ^10.0.0
+        specifier: 10.0.0
         version: 10.0.0
       dotenv:
-        specifier: ^16.3.1
-        version: 16.6.1
+        specifier: 17.2.1
+        version: 17.2.1
       koa:
-        specifier: ^2.14.2
+        specifier: 2.16.2
         version: 2.16.2
       koa-bodyparser:
-        specifier: ^4.4.1
+        specifier: 4.4.1
         version: 4.4.1
       koa-cors:
         specifier: 0.0.16
@@ -36,10 +36,10 @@ importers:
         specifier: 4.0.4
         version: 4.0.4
       koa-router:
-        specifier: ^12.0.0
+        specifier: 12.0.1
         version: 12.0.1
       langchain:
-        specifier: ^0.0.140
+        specifier: 0.0.140
         version: 0.0.140(axios@1.11.0)(html-to-text@9.0.5)(ignore@5.3.2)(jsdom@26.1.0)
       react:
         specifier: 18.2.0
@@ -61,19 +61,19 @@ importers:
         specifier: 1.4.3
         version: 1.4.3(@swc/helpers@0.5.17)
       '@rspress/plugin-playground':
-        specifier: ^1.44.0
-        version: 1.45.0(@rspress/core@1.44.0(webpack@5.101.0(@swc/core@1.13.3(@swc/helpers@0.5.17))))(monaco-editor@0.52.2)(react-dom@18.2.0(react@18.2.0))(react-router-dom@6.30.1(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0)
+        specifier: 1.44.0
+        version: 1.44.0(@rspress/core@1.44.0(webpack@5.101.0(@swc/core@1.13.3(@swc/helpers@0.5.17))))(monaco-editor@0.52.2)(react-dom@18.2.0(react@18.2.0))(react-router-dom@6.30.1(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0)
       '@types/koa':
-        specifier: 2.13.8
-        version: 2.13.8
+        specifier: 2.15.0
+        version: 2.15.0
       '@types/koa-bodyparser':
         specifier: 4.3.10
         version: 4.3.10
       '@types/koa-cors':
-        specifier: ^0.0.4
+        specifier: 0.0.4
         version: 0.0.4
       '@types/koa-jwt':
-        specifier: ^3.3.0
+        specifier: 3.3.0
         version: 3.3.0
       '@types/koa-router':
         specifier: 7.4.5
@@ -197,10 +197,10 @@ importers:
   libs/files-buffer:
     dependencies:
       axios:
-        specifier: ^1.7.0
+        specifier: 1.11.0
         version: 1.11.0
       spark-md5:
-        specifier: ^3.0.2
+        specifier: 3.0.2
         version: 3.0.2
     devDependencies:
       '@biomejs/biome':
@@ -1797,11 +1797,11 @@ packages:
     peerDependencies:
       '@rspress/runtime': ^1.44.0
 
-  '@rspress/plugin-playground@1.45.0':
-    resolution: {integrity: sha512-VWLURBG32qQQp7s+y6kF8qLC2osYf1GWavklrkG7rGWmApSl54fux95BKRwKNTSn3VAbSCt49j/ho2ILjAu50Q==}
+  '@rspress/plugin-playground@1.44.0':
+    resolution: {integrity: sha512-qQpnLP7FPY+NTYjLEEEm0GVjfRr31f5DRUdvRUJq5A+qOOfVLvnUWLrVtwbXE4nyf18ggcavhamhazQWcISyQg==}
     engines: {node: '>=14.17.6'}
     peerDependencies:
-      '@rspress/core': ^1.45.0
+      '@rspress/core': ^1.44.0
       react: '>=17.0.0'
       react-router-dom: ^6.8.1
 
@@ -1811,9 +1811,6 @@ packages:
 
   '@rspress/shared@1.44.0':
     resolution: {integrity: sha512-a+yf9/UZRJHEaIA7ktAahaQC/iby/UBpNz+gWyQRYkQgkJdIhaVITWT51lCjYXKjv09yT68RmCVG3Yvs1kC0JQ==}
-
-  '@rspress/shared@1.45.0':
-    resolution: {integrity: sha512-/M3AKChGVyKcX0MzPWpFIT2tFFsDLluHXCwww54LbMJBUKJm53FfKna0IUKMUesP9/A98RIb4Gsmx3tI18jCRw==}
 
   '@rspress/theme-default@1.44.0':
     resolution: {integrity: sha512-bk7IT9QPyveSnwJ3+3wCpA6F2f4oOS4GxlBKQRbOSK4CcTt0O2CmH3QgfaRIOS5j5U9+qck0UmTKljQOUyG8/A==}
@@ -2094,8 +2091,8 @@ packages:
   '@types/koa-router@7.4.5':
     resolution: {integrity: sha512-9DpkJcOpeK2bXUfyLDKzbDnohUp1TcNBQ7XsuadjYcHMsCOILRbzQdA/g5qJA+0zHi0cet64bOycXz2Snb0Rpw==}
 
-  '@types/koa@2.13.8':
-    resolution: {integrity: sha512-Ugmxmgk/yPRW3ptBTh9VjOLwsKWJuGbymo1uGX0qdaqqL18uJiiG1ZoV0rxCOYSaDGhvEp5Ece02Amx0iwaxQQ==}
+  '@types/koa@2.15.0':
+    resolution: {integrity: sha512-7QFsywoE5URbuVnG3loe03QXuGajrnotr3gQkXcEBShORai23MePfFYdhz90FEtBBpkyIYQbVD+evKtloCgX3g==}
 
   '@types/koa__router@12.0.4':
     resolution: {integrity: sha512-Y7YBbSmfXZpa/m5UGGzb7XadJIRBRnwNY9cdAojZGp65Cpe5MAP3mOZE7e3bImt8dfKS4UFcR16SLH8L/z7PBw==}
@@ -3030,8 +3027,8 @@ packages:
   domutils@3.2.2:
     resolution: {integrity: sha512-6kZKyUajlDuqlHKVX1w7gyslj9MPIXzIFiz/rGu35uC1wMi+kMhQwGhl4lt9unC9Vb9INnY9Z3/ZA3+FhASLaw==}
 
-  dotenv@16.6.1:
-    resolution: {integrity: sha512-uBq4egWHTcTt33a72vpSG0z3HnPuIl6NqYcTrKEg2azoEyl2hpW0zqlxysq2pK9HlDIHyHyakeYaYnSAwd8bow==}
+  dotenv@17.2.1:
+    resolution: {integrity: sha512-kQhDYKZecqnM0fCnzI5eIv5L4cAe/iRI+HqMbO/hbRdTAeXDG+M9FjipUxNfbARuEg4iHIbhnhs78BCHNbSxEQ==}
     engines: {node: '>=12'}
 
   dunder-proto@1.0.1:
@@ -7876,13 +7873,13 @@ snapshots:
       '@rspress/runtime': 1.44.0
       medium-zoom: 1.1.0
 
-  '@rspress/plugin-playground@1.45.0(@rspress/core@1.44.0(webpack@5.101.0(@swc/core@1.13.3(@swc/helpers@0.5.17))))(monaco-editor@0.52.2)(react-dom@18.2.0(react@18.2.0))(react-router-dom@6.30.1(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0)':
+  '@rspress/plugin-playground@1.44.0(@rspress/core@1.44.0(webpack@5.101.0(@swc/core@1.13.3(@swc/helpers@0.5.17))))(monaco-editor@0.52.2)(react-dom@18.2.0(react@18.2.0))(react-router-dom@6.30.1(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0)':
     dependencies:
       '@mdx-js/mdx': 2.3.0
       '@monaco-editor/react': 4.6.0(monaco-editor@0.52.2)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@oxidation-compiler/napi': 0.2.0
       '@rspress/core': 1.44.0(webpack@5.101.0(@swc/core@1.13.3(@swc/helpers@0.5.17)))
-      '@rspress/shared': 1.45.0
+      '@rspress/shared': 1.44.0
       react: 18.2.0
       react-router-dom: 6.30.1(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       remark-gfm: 3.0.1
@@ -7901,13 +7898,6 @@ snapshots:
       react-router-dom: 6.30.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
 
   '@rspress/shared@1.44.0':
-    dependencies:
-      '@rsbuild/core': 1.3.22
-      gray-matter: 4.0.3
-      lodash-es: 4.17.21
-      unified: 10.1.2
-
-  '@rspress/shared@1.45.0':
     dependencies:
       '@rsbuild/core': 1.3.22
       gray-matter: 4.0.3
@@ -8217,15 +8207,15 @@ snapshots:
 
   '@types/koa-bodyparser@4.3.10':
     dependencies:
-      '@types/koa': 2.13.8
+      '@types/koa': 2.15.0
 
   '@types/koa-compose@3.2.8':
     dependencies:
-      '@types/koa': 2.13.8
+      '@types/koa': 2.15.0
 
   '@types/koa-cors@0.0.4':
     dependencies:
-      '@types/koa': 2.13.8
+      '@types/koa': 2.15.0
 
   '@types/koa-jwt@3.3.0':
     dependencies:
@@ -8233,9 +8223,9 @@ snapshots:
 
   '@types/koa-router@7.4.5':
     dependencies:
-      '@types/koa': 2.13.8
+      '@types/koa': 2.15.0
 
-  '@types/koa@2.13.8':
+  '@types/koa@2.15.0':
     dependencies:
       '@types/accepts': 1.3.7
       '@types/content-disposition': 0.5.9
@@ -8248,7 +8238,7 @@ snapshots:
 
   '@types/koa__router@12.0.4':
     dependencies:
-      '@types/koa': 2.13.8
+      '@types/koa': 2.15.0
 
   '@types/mdast@3.0.15':
     dependencies:
@@ -9303,7 +9293,7 @@ snapshots:
       domelementtype: 2.3.0
       domhandler: 5.0.3
 
-  dotenv@16.6.1: {}
+  dotenv@17.2.1: {}
 
   dunder-proto@1.0.1:
     dependencies:
