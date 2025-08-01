@@ -26,8 +26,8 @@
     /* Path Mapping */
     "baseUrl": ".",
     "paths": {
-      "perfor-monitor": ["../libs/perfor-monitor/src"],
-      "perfor-monitor/*": ["../libs/perfor-monitor/src/*"]
+      "perfor-monitor": ["../libs/performance-monitor/src"],
+      "perfor-monitor/*": ["../libs/performance-monitor/src/*"]
     }
   },
   "include": ["src"]

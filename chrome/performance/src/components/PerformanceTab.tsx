@@ -199,11 +199,20 @@ const PerformanceTab: React.FC = () => {
 
     performanceMonitor.start();
 
-    // 定期向扩展发送性能数据
+        // 定期向扩展发送性能数据
     setInterval(() => {
+      // 获取当前性能指标
+      const metrics = performanceMonitor;
       chrome.runtime.sendMessage({
         type: 'performanceMetrics',
-        data: performanceMonitor.metrics
+        data: {
+          FCP: metrics.metrics?.FCP || 0,
+          LCP: metrics.metrics?.LCP || 0,
+          TTI: metrics.metrics?.TTI || 0,
+          FID: metrics.metrics?.FID || 0,
+          INP: metrics.metrics?.INP || 0,
+          CLS: metrics.metrics?.CLS || 0
+        }
       });
     }, 1000);
 
@@ -214,7 +223,7 @@ const PerformanceTab: React.FC = () => {
       largeJankThreshold: 100
     });
 
-    jankMonitor.onUpdate = (data: any) => {
+    jankMonitor.onUpdate = (data: PerformancePanelMetrics) => {
       chrome.runtime.sendMessage({
         type: 'jankMetrics',
         data
