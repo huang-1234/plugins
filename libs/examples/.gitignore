@@ -143,3 +143,6 @@ server/temp
 server/.temp
 server/uploads
 server/.uploads
+
+web/dist
+server/dist

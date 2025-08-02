@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { FileUploader, UploadResult, UploadStatus, UploadController } from '../../files-buffer/src/index';
+import { FileUploader, UploadResult, UploadStatus, UploadController } from '../../../files-buffer/src';
 
 /**
  * 基础使用示例

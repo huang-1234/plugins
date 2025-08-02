@@ -6,7 +6,7 @@ const port = 5173;
 
 export default defineConfig({
   plugins: [react()],
-  root: resolve(__dirname),
+  root: resolve(__dirname, 'src'),
   base: './',
   server: {
     port,
@@ -20,7 +20,16 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '@': resolve(__dirname),
+      '@': resolve(__dirname, 'src'),
+    },
+  },
+  build: {
+    outDir: './dist',
+    emptyOutDir: true,
+    rollupOptions: {
+      input: {
+        main: resolve(__dirname, 'src/index.html'),
+      },
     },
   },
 });
