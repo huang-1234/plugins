@@ -34,6 +34,10 @@ app.use(koaBody({
   }
 }));
 
+router.get('/api/test', async (ctx) => {
+  ctx.body = { message: 'Hello, World!' };
+});
+
 /**
  * 检查文件是否已存在（秒传）
  */
@@ -48,12 +52,15 @@ router.post('/api/check', async (ctx) => {
       return;
     }
 
-    // 完整文件路径
-    const filePath = path.join(uploadDir, `${fileHash}`);
+    // 获取文件扩展名
+    const fileExt = fileName ? path.extname(fileName) : '';
+
+    // 完整文件路径（带扩展名）
+    const filePath = path.join(uploadDir, `${fileHash}${fileExt}`);
 
     // 检查文件是否已存在（秒传）
     if (fs.existsSync(filePath)) {
-      ctx.body = { exists: true };
+      ctx.body = { exists: true, url: `/files/${fileHash}${fileExt}` };
       return;
     }
 
@@ -154,8 +161,11 @@ router.post('/api/merge', async (ctx) => {
         return indexA - indexB;
       });
 
-    // 目标文件
-    const filePath = path.join(uploadDir, fileHash);
+    // 获取文件扩展名
+    const fileExt = fileName ? path.extname(fileName) : '';
+
+    // 目标文件（带扩展名）
+    const filePath = path.join(uploadDir, `${fileHash}${fileExt}`);
     const writeStream = fs.createWriteStream(filePath);
 
     // 合并分片
@@ -195,7 +205,7 @@ router.post('/api/merge', async (ctx) => {
 
     ctx.body = {
       success: true,
-      url: `/files/${fileHash}`, // 文件访问URL
+      url: `/files/${fileHash}${fileExt}`, // 文件访问URL（带扩展名）
       ...fileInfo
     };
   } catch (error) {
@@ -210,16 +220,28 @@ router.post('/api/merge', async (ctx) => {
  */
 router.get('/files/:hash', async (ctx) => {
   const { hash } = ctx.params;
-  const filePath = path.join(uploadDir, hash);
 
+  // 尝试查找带扩展名和不带扩展名的文件
+  let filePath = path.join(uploadDir, hash);
+  let fileName = hash;
+
+  // 如果直接找不到文件，尝试查找目录中可能匹配的文件
   if (!fs.existsSync(filePath)) {
-    ctx.status = 404;
-    ctx.body = '文件不存在';
-    return;
+    const files = fs.readdirSync(uploadDir);
+    const matchingFile = files.find(file => file.startsWith(hash));
+
+    if (matchingFile) {
+      filePath = path.join(uploadDir, matchingFile);
+      fileName = matchingFile;
+    } else {
+      ctx.status = 404;
+      ctx.body = '文件不存在';
+      return;
+    }
   }
 
   // 使用koa-send发送文件
-  await send(ctx, hash, { root: uploadDir });
+  await send(ctx, fileName, { root: uploadDir });
 });
 
 // 注册路由

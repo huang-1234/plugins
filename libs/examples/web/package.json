@@ -1,0 +1,12 @@
+{
+  "name": "files-buffer-web-example",
+  "version": "1.0.0",
+  "description": "大文件分片上传前端示例",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "private": true
+}

@@ -1,12 +1,90 @@
 ---
-description:
+description: |
+  适用于 pnpm 管理的 Monorepo 架构（前后端共享包），规范依赖安装、包开发与发布流程。
 globs:
+  - "packages/*"  # 子包目录（存放可复用 npm 包）
+  - "apps/*"      # 应用目录（如前端/后端项目）
 alwaysApply: false
 ---
 
-## 依赖安装与包发布
+## 一、依赖管理（pnpm）
 
-使用 pnpm 进行包安装管理
-使用 npm 发布本地包
+### 1. 工具要求
+- **必须使用 pnpm**（禁止 npm/yarn），根目录和所有子包均通过 `pnpm` 安装和管理依赖。
+
+### 2. 依赖安装
+- **推荐在根目录执行安装**（共享依赖版本，减少重复）：
+```bash
+  pnpm add <package>          # 安装生产依赖
+  pnpm add -D <package>       # 安装开发依赖
+```
+- **子包间依赖**：必须通过 `workspace:*` 协议引用（禁止直接引用本地文件路径）：
+
+```json
+  "dependencies": {
+    "@your-org/utils": "workspace:*"  # 引用同 Monorepo 下的子包
+  }
+```
+
+## 二、包开发规范
+
+### 1. 子包目录结构
+- 子包存放在 `packages/<包名>/` 下，每个子包需包含：
+
+```json
+  packages/<包名>/
+  ├── src/          # 源码目录
+  ├── package.json  # 必须配置 name/version/main/types 等字段
+  └── README.md     # 包功能说明（可选但推荐）
+```
+
+### 2. 包配置要求
+- **package.json 关键字段**：
+  - `name`: 使用组织作用域格式（如 `@your-org/utils`）。
+  - `version`: 遵循语义化版本（SemVer，如 `1.0.0`）。
+  - `main`/`module`/`types`: 指定入口文件和 TypeScript 类型声明。
+  - `publishConfig`（可选）：指定 npm registry（私有或公共）。
+
+- **复用根配置**：子包的 TypeScript 配置（如 `tsconfig.json`）建议通过 `extends` 继承根目录配置，保持类型一致。
 
 
+## 三、包发布流程
+
+### 1. 发布前准备
+- 确保已登录 npm（执行 `npm login`）。
+- 更新子包版本号（在子包目录下执行）：
+```bash
+  pnpm version patch|minor|major  # 按需选择版本更新类型
+```
+- 同步根目录依赖（确保子包间 `workspace:*` 依赖生效）：
+
+```bash
+  pnpm install
+```
+
+### 2. 执行发布
+- 进入目标子包目录，执行发布命令：
+```bash
+  cd packages/<包名>
+  npm publish                   # 发布到默认 registry（如 npmjs.org）
+  # 或发布到私有仓库
+  npm publish --registry=<私有仓库URL>
+```
+
+
+## 四、开发协作建议
+
+### 1. 向 Cursor 明确上下文
+提问时需指定包名和作用域，例如：
+> “在 `packages/utils` 中实现一个防抖函数，导出为 TypeScript 模块”
+> “在 `apps/frontend` 中调用 `@your-org/utils` 的工具函数”
+
+### 2. 目录与依赖规范
+- **禁止混用**：应用代码（如前端/后端）必须放在 `apps/` 下，可复用逻辑放在 `packages/` 下。
+- **类型安全**：子包间调用必须通过 `workspace:*` 依赖，禁止直接引用本地文件路径（如 `../../../packages/utils`）。
+
+
+📌 **核心总结**
+- 用 pnpm 管所有依赖，workspace 引用子包；
+- 子包按规范开发，版本更新后发布到 npm；
+- 向 Cursor 提问时明确包名和作用域，确保生成代码符合 Monorepo 结构。
