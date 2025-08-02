@@ -7,6 +7,15 @@ import {  menuItems } from './layouts/RouterMenu';
 function App() {
   const _renderMenuPage = () => {
     return menuItems.map(item => {
+      if (item.children && item.children.length > 0) {
+        return item.children.map(child => {
+          const Component = child.component;
+          if (Component) {
+            return <Route key={child.key} path={`${item.key}${child.key}`} element={<Component />} />;
+          }
+          return null;
+        });
+      }
       const Component = item.component;
       if (Component) {
         return <Route key={item.key} path={item.key} element={<Component />} />;

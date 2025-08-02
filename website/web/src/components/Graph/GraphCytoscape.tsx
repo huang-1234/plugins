@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import CytoscapeComponent from 'react-cytoscapejs';
-import cytoscape from 'cytoscape';
+import * as cytoscape from 'cytoscape';
 import {
   GraphData,
   GraphNode,
@@ -38,7 +38,7 @@ const GraphCytoscape: React.FC<GraphCytoscapeProps> = ({
   onGraphReady
 }) => {
   const cyRef = useRef<cytoscape.Core | null>(null);
-  const [elements, setElements] = useState<cytoscape.ElementDefinition[]>([]);
+  const [elements, setElements] = useState<any[]>([]);
 
   // 处理数据变化，转换为Cytoscape元素格式
   useEffect(() => {
@@ -74,7 +74,7 @@ const GraphCytoscape: React.FC<GraphCytoscapeProps> = ({
   };
 
   // 当组件获取到Cytoscape实例时
-  const getCyRef = (cy: cytoscape.Core) => {
+  const getCyRef = (cy: any) => {
     cyRef.current = cy;
     registerEventHandlers(cy);
 
@@ -94,10 +94,11 @@ const GraphCytoscape: React.FC<GraphCytoscapeProps> = ({
     <div className={styles.graphContainer} style={containerStyle}>
       {elements.length > 0 && (
         <CytoscapeComponent
-          elements={elements}
+          key={elements.length}
+          elements={elements as any}
           className={styles.graphContent}
-          cy={getCyRef}
-          stylesheet={createBaseStyles()}
+          cy={(cy) => getCyRef(cy)}
+          stylesheet={createBaseStyles() as any}
           userZoomingEnabled={true}
           userPanningEnabled={true}
           boxSelectionEnabled={true}

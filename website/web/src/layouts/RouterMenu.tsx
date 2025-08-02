@@ -12,6 +12,7 @@ export interface IMenu {
   key: string;
   icon: React.ReactNode;
   label: string;
+  children?: IMenu[];
   component?: Loadable<{}> | React.ComponentType<any>;
 }
 export const menuItems: IMenu[] = [
@@ -43,6 +44,13 @@ export const menuItems: IMenu[] = [
     key: '/graph',
     label: '图表',
     icon: <BorderOuterOutlined />,
-    component: GraphPage,
+    children: [
+      {
+        key: '/cytoscape',
+        label: 'Cytoscape',
+        icon: <BorderOuterOutlined />,
+        component: GraphPage
+      }
+    ],
   }
 ];

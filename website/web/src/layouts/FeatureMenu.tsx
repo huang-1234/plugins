@@ -14,11 +14,25 @@ const FeatureMenu = () => {
     <Menu
       mode="inline"
       selectedKeys={[location.pathname]}
-      items={menuItems?.map(item => ({
-        key: item.key,
-        icon: item.icon,
-        label: item.label,
-      }))}
+      items={menuItems?.map(item => {
+        if (item.children) {
+          return {
+            key: item.key,
+            icon: item.icon,
+            label: item.label,
+            children: item.children?.map(child => ({
+              key: `${item.key}${child.key}`,
+              icon: child.icon,
+              label: child.label,
+            })),
+          }
+        }
+        return {
+          key: item.key,
+          icon: item.icon,
+          label: item.label,
+        }
+      })}
       onClick={handleMenuClick}
       style={{ height: '100%', borderRight: 0 }}
     />

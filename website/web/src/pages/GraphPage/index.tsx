@@ -81,55 +81,67 @@ const GraphPage: React.FC = () => {
         </Paragraph>
       </div>
 
-      <Space direction="vertical" size="large" className={styles.fullWidth}>
-        <Card title="配置选项" size="small" className={styles.controlsCard}>
-          <Space direction="vertical">
-            <div className={styles.controlItem}>
-              <span className={styles.controlLabel}>数据集:</span>
-              <Radio.Group
-                value={selectedData === sampleData ? 'sample' : 'langgraph'}
-                onChange={(e) => setSelectedData(e.target.value === 'sample' ? sampleData : langGraphData)}
+      <div className={styles.cardContainer}>
+        <Card
+          title="配置选项"
+          size="small"
+          className={`${styles.card} ${styles.controlsCard}`}
+          bodyStyle={{ flex: 1, display: 'flex', flexDirection: 'column' }}
+        >
+          <div className={styles.cardContent}>
+            <Space direction="vertical">
+              <div className={styles.controlItem}>
+                <span className={styles.controlLabel}>数据集:</span>
+                <Radio.Group
+                  value={selectedData === sampleData ? 'sample' : 'langgraph'}
+                  onChange={(e) => setSelectedData(e.target.value === 'sample' ? sampleData : langGraphData)}
+                >
+                  <Radio.Button value="sample">简单流程图</Radio.Button>
+                  <Radio.Button value="langgraph">LangGraph示例</Radio.Button>
+                </Radio.Group>
+              </div>
+
+              <div className={styles.controlItem}>
+                <span className={styles.controlLabel}>布局算法:</span>
+                <Radio.Group value={layoutName} onChange={(e) => setLayoutName(e.target.value)}>
+                  <Radio.Button value="cose">力导向布局</Radio.Button>
+                  <Radio.Button value="circle">圆形布局</Radio.Button>
+                  <Radio.Button value="grid">网格布局</Radio.Button>
+                  <Radio.Button value="breadthfirst">树形布局</Radio.Button>
+                </Radio.Group>
+              </div>
+
+              <div className={styles.controlItem}>
+                <span className={styles.controlLabel}>组件版本:</span>
+                <Radio.Group value={useEnhanced} onChange={(e) => setUseEnhanced(e.target.value)}>
+                  <Radio.Button value={false}>基础版</Radio.Button>
+                  <Radio.Button value={true}>增强版</Radio.Button>
+                </Radio.Group>
+              </div>
+
+              <Button
+                type="primary"
+                onClick={addRandomNode}
+                className={styles.addNodeButton}
               >
-                <Radio.Button value="sample">简单流程图</Radio.Button>
-                <Radio.Button value="langgraph">LangGraph示例</Radio.Button>
-              </Radio.Group>
-            </div>
-
-            <div className={styles.controlItem}>
-              <span className={styles.controlLabel}>布局算法:</span>
-              <Radio.Group value={layoutName} onChange={(e) => setLayoutName(e.target.value)}>
-                <Radio.Button value="cose">力导向布局</Radio.Button>
-                <Radio.Button value="circle">圆形布局</Radio.Button>
-                <Radio.Button value="grid">网格布局</Radio.Button>
-                <Radio.Button value="breadthfirst">树形布局</Radio.Button>
-              </Radio.Group>
-            </div>
-
-            <div className={styles.controlItem}>
-              <span className={styles.controlLabel}>组件版本:</span>
-              <Radio.Group value={useEnhanced} onChange={(e) => setUseEnhanced(e.target.value)}>
-                <Radio.Button value={false}>基础版</Radio.Button>
-                <Radio.Button value={true}>增强版</Radio.Button>
-              </Radio.Group>
-            </div>
-
-            <Button
-              type="primary"
-              onClick={addRandomNode}
-              className={styles.addNodeButton}
-            >
-              添加随机节点
-            </Button>
-          </Space>
+                添加随机节点
+              </Button>
+            </Space>
+          </div>
         </Card>
 
-        <Card title="图可视化" className={styles.graphCard}>
+        <Card
+          title="图可视化"
+          className={`${styles.card} ${styles.graphCard}`}
+          bodyStyle={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '12px' }}
+        >
           <div className={styles.graphContainer}>
             {useEnhanced ? (
               <EnhancedGraphCytoscape
                 data={selectedData}
                 layoutName={layoutName}
                 height="100%"
+                width="100%"
                 onNodeClick={handleNodeClick}
                 onEdgeClick={handleEdgeClick}
                 enableNodeDragging={true}
@@ -141,6 +153,7 @@ const GraphPage: React.FC = () => {
                 data={selectedData}
                 layoutName={layoutName}
                 height="100%"
+                width="100%"
                 onNodeClick={handleNodeClick}
                 onEdgeClick={handleEdgeClick}
               />
@@ -148,7 +161,11 @@ const GraphPage: React.FC = () => {
           </div>
         </Card>
 
-        <Card title="节点状态说明" className={styles.legendCard}>
+        <Card
+          title="节点状态说明"
+          className={`${styles.card} ${styles.legendCard}`}
+          bodyStyle={{ flex: 1, display: 'flex', flexDirection: 'column' }}
+        >
           <div className={styles.legendContainer}>
             <div className={styles.legendItem}>
               <div className={`${styles.legendColor} ${styles.defaultColor}`} />
@@ -168,7 +185,7 @@ const GraphPage: React.FC = () => {
             </div>
           </div>
         </Card>
-      </Space>
+      </div>
     </div>
   );
 };
