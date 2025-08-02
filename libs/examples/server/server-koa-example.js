@@ -20,8 +20,8 @@ const uploadDir = path.join(__dirname, 'uploads');
 const tempDir = path.join(uploadDir, 'temp');
 
 // 确保目录存在
-if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir);
-if (!fs.existsSync(tempDir)) fs.mkdirSync(tempDir);
+if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
+if (!fs.existsSync(tempDir)) fs.mkdirSync(tempDir, { recursive: true });
 
 // 使用中间件
 app.use(cors()); // 允许跨域请求
@@ -30,7 +30,8 @@ app.use(koaBody({
   formidable: {
     maxFileSize: 200 * 1024 * 1024, // 限制单个分片大小 200MB
     keepExtensions: true,
-    uploadDir: tempDir // 临时文件保存目录
+    uploadDir: tempDir, // 临时文件保存目录
+    createParentPath: true // 自动创建父目录
   }
 }));
 
@@ -106,6 +107,13 @@ router.post('/api/upload', async (ctx) => {
 
     // 获取上传的临时文件路径
     const filePath = Array.isArray(chunk) ? chunk[0].filepath : chunk.filepath;
+
+    // 确保文件存在
+    if (!fs.existsSync(filePath)) {
+      ctx.status = 400;
+      ctx.body = { error: '临时文件不存在', path: filePath };
+      return;
+    }
 
     // 读取上传的临时文件
     const reader = fs.createReadStream(filePath);
