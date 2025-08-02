@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import { Card, Space, Typography, Collapse } from 'antd';
 import GraphCytoscape from '@/components/Graph/GraphCytoscape';
 import EnhancedGraphCytoscape from '@/components/Graph/EnhancedGraphCytoscape';
@@ -17,6 +17,8 @@ const GraphPage: React.FC = () => {
   const [layoutName, setLayoutName] = useState<string>('cose');
   const [useEnhanced, setUseEnhanced] = useState<boolean>(true);
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
+  const [layoutChangeCounter, setLayoutChangeCounter] = useState<number>(0);
+  const cyInstanceRef = useRef<any>(null);
 
   // 处理节点点击事件
   const handleNodeClick = (node: GraphNode) => {
@@ -86,6 +88,39 @@ const GraphPage: React.FC = () => {
     setGraphData(value === 'sample' ? sampleData : langGraphData);
   }, []);
 
+  // 切换布局算法
+  const handleLayoutChange = useCallback((value: string) => {
+    setLayoutName(value);
+    setLayoutChangeCounter(prev => prev + 1); // 触发布局重新应用
+
+    // 如果有cytoscape实例，直接应用新布局
+    if (cyInstanceRef.current) {
+      const cy = cyInstanceRef.current;
+      // 解锁所有节点以便重新布局
+      cy.nodes().unlock();
+
+      // 应用新布局
+      const layout = cy.layout({
+        name: value,
+        animate: true,
+        animationDuration: 500,
+        fit: true,
+        padding: 30
+      });
+      layout.run();
+
+      // 布局完成后重新锁定节点
+      layout.one('layoutstop', () => {
+        cy.nodes().lock();
+      });
+    }
+  }, []);
+
+  // 保存Cytoscape实例引用
+  const handleGraphReady = useCallback((cy: any) => {
+    cyInstanceRef.current = cy;
+  }, []);
+
   return (
     <div className={styles.graphPageContainer}>
       <div className={styles.titleSection}>
@@ -107,7 +142,7 @@ const GraphPage: React.FC = () => {
                 layoutName={layoutName}
                 useEnhanced={useEnhanced}
                 onDatasetChange={handleDatasetChange}
-                onLayoutChange={setLayoutName}
+                onLayoutChange={handleLayoutChange}
                 onVersionChange={setUseEnhanced}
               />
 
@@ -128,6 +163,7 @@ const GraphPage: React.FC = () => {
           <div className={styles.graphContainer}>
             {useEnhanced ? (
               <EnhancedGraphCytoscape
+                key={`enhanced-graph-${layoutChangeCounter}`}
                 data={graphData}
                 layoutName={layoutName}
                 height="100%"
@@ -136,15 +172,18 @@ const GraphPage: React.FC = () => {
                 onEdgeClick={handleEdgeClick}
                 onAddOutgoingEdge={handleAddOutgoingEdge}
                 onAddIncomingEdge={handleAddIncomingEdge}
+                onGraphReady={handleGraphReady}
               />
             ) : (
               <GraphCytoscape
+                key={`basic-graph-${layoutChangeCounter}`}
                 data={graphData}
                 layoutName={layoutName}
                 height="100%"
                 width="100%"
                 onNodeClick={handleNodeClick}
                 onEdgeClick={handleEdgeClick}
+                onGraphReady={handleGraphReady}
               />
             )}
           </div>
