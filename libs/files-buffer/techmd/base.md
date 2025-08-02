@@ -252,11 +252,11 @@ app.post('/api/merge', async (req, res) => {
 // package.json
 {
   "dependencies": {
-    "react": "^18.2.0",
-    "axios": "^1.7.0",
-    "spark-md5": "^3.0.2",
-    "multer": "^1.4.5",        // 服务端文件处理
-    "express": "^4.19.2"       // 服务端框架
+    "react": "18.2.0",
+    "axios": "1.11.0",
+    "spark-md5": "3.0.2",
+    "multer": "1.4.5",        // 服务端文件处理
+    "express": "4.19.2"       // 服务端框架
   }
 }
 ```
