@@ -4,7 +4,32 @@ import path from 'path';
 
 const router = new Router();
 
-// MDX文档服务
+/**
+ * @swagger
+ * /{name}:
+ *   get:
+ *     summary: 获取指定文档
+ *     description: 获取指定名称的Markdown文档
+ *     tags: [文档]
+ *     parameters:
+ *       - in: path
+ *         name: name
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: 文档名称
+ *     responses:
+ *       200:
+ *         description: 成功返回文档内容
+ *         content:
+ *           text/markdown:
+ *             schema:
+ *               type: string
+ *       404:
+ *         description: 文档不存在
+ *       500:
+ *         description: 服务器错误
+ */
 router.get('/:name', async (ctx) => {
   const { name } = ctx.params;
   const docPath = path.resolve(__dirname, `../../content/${name}.mdx`);
@@ -30,7 +55,38 @@ router.get('/:name', async (ctx) => {
   }
 });
 
-// 获取文档列表
+/**
+ * @swagger
+ * /:
+ *   get:
+ *     summary: 获取文档列表
+ *     description: 获取所有可用的Markdown文档列表
+ *     tags: [文档]
+ *     responses:
+ *       200:
+ *         description: 成功返回文档列表
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       name:
+ *                         type: string
+ *                       path:
+ *                         type: string
+ *                       lastModified:
+ *                         type: string
+ *                         format: date-time
+ *       500:
+ *         description: 服务器错误
+ */
 router.get('/', async (ctx) => {
   const contentDir = path.resolve(__dirname, '../../content');
 

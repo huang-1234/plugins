@@ -1,13 +1,31 @@
 import Router from 'koa-router';
 import { SystemService } from '../services/SystemService';
-import { sseMiddleware } from '../middleware/sse';
 
 const router = new Router();
 const systemService = new SystemService();
 
-// SSE消息推送
+/**
+ * @swagger
+ * /sse:
+ *   get:
+ *     summary: SSE实时消息推送
+ *     description: 使用Server-Sent Events实时推送系统状态信息
+ *     tags: [系统]
+ *     responses:
+ *       200:
+ *         description: 成功建立SSE连接
+ *         content:
+ *           text/event-stream:
+ *             schema:
+ *               type: string
+ *       500:
+ *         description: 服务器错误
+ */
 router.get('/sse', async (ctx) => {
-  router.use(sseMiddleware);
+  ctx.set('Content-Type', 'text/event-stream');
+  ctx.set('Cache-Control', 'no-cache');
+  ctx.set('Connection', 'keep-alive');
+
   // 保持连接
   ctx.req.socket.setTimeout(0);
   ctx.req.socket.setNoDelay(true);

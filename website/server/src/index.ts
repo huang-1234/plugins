@@ -6,10 +6,12 @@ import Router from 'koa-router';
 import dotenv from 'dotenv';
 import fs from 'fs';
 import path from 'path';
+import serve from 'koa-static';
 import { fileRoutes } from './routes/file';
 import { aiRoutes } from './routes/ai';
 import { sseRoutes } from './routes/sse';
 import { docRoutes } from './routes/doc';
+import { setupSwagger } from './swagger';
 
 // 加载环境变量
 dotenv.config();
@@ -17,17 +19,26 @@ dotenv.config();
 const app = new Koa();
 const router = new Router();
 
+// 静态文件服务
+app.use(serve(path.join(__dirname, '../public')));
+
 // JWT鉴权中间件
 app.use(jwt({
   secret: process.env.JWT_SECRET || 'default_secret',
   passthrough: true // 允许文档接口免认证
-}).unless({ path: [/^\/docs/] }));
+}).unless({ path: [/^\/docs/, /^\/swagger/, /^\/swagger.json/] }));
 
 // 跨域配置
 app.use(cors({
   origin: process.env.CLIENT_URL || 'http://localhost:5173',
   credentials: true
 }));
+
+// 注册中间件
+app.use(bodyParser());
+
+// 设置Swagger
+setupSwagger(app);
 
 // 注册路由
 router.use('/api/upload', fileRoutes.routes());
@@ -49,8 +60,6 @@ app.use(async (ctx, next) => {
   }
 });
 
-// 注册中间件
-app.use(bodyParser());
 app.use(router.routes());
 app.use(router.allowedMethods());
 
@@ -89,6 +98,7 @@ const findAvailablePort = async (startPort: number): Promise<number> => {
   app.listen(port, () => {
     console.log(`服务器已启动，监听端口: ${port}`);
     console.log(`服务器地址为 http://localhost:${port}`);
+    console.log(`Swagger文档地址: http://localhost:${port}/swagger`);
   });
 })();
 

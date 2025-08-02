@@ -1,17 +1,63 @@
 import Router from 'koa-router';
-import { AIService } from '../services/ai-service/ai-service';
+import { AIService } from '../services/ai-service';
 
 const router = new Router();
 const aiService = new AIService();
 
-router.use(async (ctx, next) => {
-  ctx.set('Access-Control-Allow-Origin', '*');
-  ctx.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  ctx.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  await next();
-});
-
-// LangChain代理路由
+/**
+ * @swagger
+ * /ai/chat:
+ *   post:
+ *     summary: 聊天接口
+ *     description: 与AI进行对话
+ *     tags: [AI]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - message
+ *             properties:
+ *               message:
+ *                 type: string
+ *                 description: 用户发送的消息
+ *               history:
+ *                 type: array
+ *                 description: 对话历史
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     role:
+ *                       type: string
+ *                       enum: [user, assistant, system]
+ *                     content:
+ *                       type: string
+ *     responses:
+ *       200:
+ *         description: 成功响应
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     content:
+ *                       type: string
+ *                     id:
+ *                       type: string
+ *                     model:
+ *                       type: string
+ *       400:
+ *         description: 请求错误
+ *       500:
+ *         description: 服务器错误
+ */
 router.post('/chat', async (ctx) => {
   const { message, history } = (ctx.request as any)?.body as { message: string; history?: any[] };
 
@@ -36,7 +82,48 @@ router.post('/chat', async (ctx) => {
   }
 });
 
-// 流式响应
+/**
+ * @swagger
+ * /ai/stream:
+ *   post:
+ *     summary: 流式聊天接口
+ *     description: 与AI进行流式对话，支持实时响应
+ *     tags: [AI]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - message
+ *             properties:
+ *               message:
+ *                 type: string
+ *                 description: 用户发送的消息
+ *               history:
+ *                 type: array
+ *                 description: 对话历史
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     role:
+ *                       type: string
+ *                       enum: [user, assistant, system]
+ *                     content:
+ *                       type: string
+ *     responses:
+ *       200:
+ *         description: 流式响应
+ *         content:
+ *           text/event-stream:
+ *             schema:
+ *               type: string
+ *       400:
+ *         description: 请求错误
+ *       500:
+ *         description: 服务器错误
+ */
 router.post('/stream', async (ctx) => {
   const { message, history } = (ctx.request as any)?.body as { message: string; history?: any[] };
 

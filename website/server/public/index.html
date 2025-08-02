@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>项目网站API服务</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    h1 {
+      border-bottom: 1px solid #eee;
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+    }
+    .card {
+      background: #f9f9f9;
+      border-radius: 5px;
+      padding: 15px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .link-button {
+      display: inline-block;
+      background: #1677ff;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 4px;
+      text-decoration: none;
+      margin-top: 10px;
+    }
+    .link-button:hover {
+      background: #0958d9;
+    }
+    code {
+      background: #eee;
+      padding: 2px 5px;
+      border-radius: 3px;
+    }
+  </style>
+</head>
+<body>
+  <h1>项目网站API服务</h1>
+
+  <div class="card">
+    <h2>API文档</h2>
+    <p>使用Swagger UI查看和测试API接口</p>
+    <a href="/swagger" class="link-button">查看API文档</a>
+  </div>
+
+  <div class="card">
+    <h2>可用接口</h2>
+    <ul>
+      <li><code>POST /api/ai/chat</code> - AI聊天接口</li>
+      <li><code>POST /api/ai/stream</code> - AI流式聊天接口</li>
+      <li><code>POST /api/upload</code> - 文件上传接口</li>
+      <li><code>POST /api/upload/merge</code> - 文件分片合并接口</li>
+      <li><code>POST /api/upload/check</code> - 文件检查接口</li>
+      <li><code>GET /docs</code> - 获取文档列表</li>
+      <li><code>GET /docs/{name}</code> - 获取指定文档</li>
+      <li><code>GET /sse</code> - SSE实时消息推送</li>
+    </ul>
+  </div>
+</body>
+</html>
