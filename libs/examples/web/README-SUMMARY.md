@@ -25,7 +25,7 @@
 - `server-koa-example.js` - Koa服务端实现
 - `server-koa-package.json` - 服务端依赖配置
 - `server-koa-README.md` - 使用说明文档
-- `server-test.html` - 简单的测试页面
+- `server-upload.html` - 简单的测试页面
 
 ## 使用方法
 
@@ -51,7 +51,7 @@ node server-koa-example.js
 
 3. **测试上传**
 
-在浏览器中打开`server-test.html`文件，选择文件并点击"开始上传"按钮。
+在浏览器中打开`server-upload.html`文件，选择文件并点击"开始上传"按钮。
 
 ## 与前端库集成
 

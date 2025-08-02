@@ -23,6 +23,8 @@ export interface FileUploaderProps {
   onError?: (error: Error) => void;
   /** 上传进度回调 */
   onProgress?: (info: ProgressInfo) => void;
+  /** 上传开始回调，返回上传控制器 */
+  onUploadStart?: (controller: UploadController) => void;
   /** 自定义样式 */
   className?: string;
   /** 按钮样式 */
@@ -35,6 +37,10 @@ export interface FileUploaderProps {
   accept?: string;
   /** 最大文件大小（字节） */
   maxSize?: number;
+  /** 请求超时时间（毫秒），默认 30000 */
+  timeout?: number;
+  /** 上传重试次数，默认 3 */
+  retryCount?: number;
 }
 
 /**
@@ -50,12 +56,15 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
   onSuccess,
   onError,
   onProgress,
+  onUploadStart,
   className = '',
   buttonClassName = '',
   progressClassName = '',
   disabled = false,
   accept,
-  maxSize
+  maxSize,
+  timeout,
+  retryCount
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
@@ -90,7 +99,9 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
       baseUrl,
       chunkSize,
       concurrentLimit,
-      useWorker: true
+      useWorker: true,
+      timeout: timeout,
+      retryCount: retryCount
     });
 
     // 开始上传
@@ -107,6 +118,9 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
 
     // 保存控制器
     setController(uploadController);
+
+    // 调用上传开始回调
+    onUploadStart?.(uploadController);
 
     try {
       // 等待上传完成

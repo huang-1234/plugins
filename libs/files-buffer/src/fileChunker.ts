@@ -151,6 +151,13 @@ export class FileChunker {
       return data;
     } catch (error) {
       console.error('检查文件失败:', error);
+
+      // 如果是网络错误或超时，抛出错误以便上层处理
+      if (axios.isAxiosError(error) && (error.code === 'ECONNABORTED' || !error.response)) {
+        throw new Error(`网络连接问题: ${error.message}`);
+      }
+
+      // 其他错误返回默认值
       return { exists: false, uploadedChunks: [] };
     }
   }
