@@ -19,6 +19,7 @@
     "axios": "1.11.0",
     "cytoscape": "^3.33.0",
     "files-buffer": "workspace:*",
+    "lite-store-react": "0.1.2-alpha.0",
     "loadable-components": "^2.2.3",
     "perfor-monitor": "workspace:*",
     "react": "18.2.0",

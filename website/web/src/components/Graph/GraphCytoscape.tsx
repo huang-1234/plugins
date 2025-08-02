@@ -9,7 +9,7 @@ import {
   createBaseStyles,
   createLayoutConfig,
   processNodeData
-} from '../../model/graph/graph_cytoscape';
+} from '../../model/graph/tool';
 import styles from './GraphCytoscape.module.less';
 
 export interface GraphCytoscapeProps {
@@ -92,7 +92,7 @@ const GraphCytoscape: React.FC<GraphCytoscapeProps> = ({
 
   return (
     <div className={styles.graphContainer} style={containerStyle}>
-      {elements.length > 0 && (
+      {elements.length > 0 ? (
         <CytoscapeComponent
           key={elements.length}
           elements={elements as any}
@@ -103,9 +103,9 @@ const GraphCytoscape: React.FC<GraphCytoscapeProps> = ({
           userPanningEnabled={true}
           boxSelectionEnabled={true}
         />
-      )}
+      ) : null}
     </div>
   );
 };
 
-export default GraphCytoscape;
+export default React.memo(GraphCytoscape);

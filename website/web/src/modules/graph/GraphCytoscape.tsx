@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { GraphCytoscapeProps } from '../../components/Graph/GraphCytoscape';
 import GraphCytoscape from '../../components/Graph/GraphCytoscape';
-import { GraphData, GraphNode, GraphEdge } from '../../model/graph/graph_cytoscape';
+import { GraphData, GraphNode, GraphEdge } from '../../model/graph/tool';
 import cytoscape from 'cytoscape';
 import styles from './GraphCytoscape.module.less';
 

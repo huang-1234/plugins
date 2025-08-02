@@ -2,7 +2,7 @@
 import loadable, { Loadable } from 'loadable-components'
 import { FileTextOutlined, UploadOutlined, MessageOutlined, HomeOutlined, BorderOuterOutlined } from '@ant-design/icons';
 const HomePage = loadable(() => import('../pages/HomePage'));
-const GraphPage = loadable(() => import('../pages/GraphPage'));
+const PageCytoscape = loadable(() => import('../pages/Graph/Cytoscape'));
 const ChatPage = loadable(() => import('../pages/ChatPage'));
 const UploadPage = loadable(() => import('../pages/UploadPage'));
 const DocsPage = loadable(() => import('../pages/DocsPage'));
@@ -49,7 +49,7 @@ export const menuItems: IMenu[] = [
         key: '/cytoscape',
         label: 'Cytoscape',
         icon: <BorderOuterOutlined />,
-        component: GraphPage
+        component: PageCytoscape
       }
     ],
   }
