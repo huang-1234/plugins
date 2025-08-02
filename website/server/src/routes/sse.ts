@@ -1,15 +1,13 @@
 import Router from 'koa-router';
 import { SystemService } from '../services/SystemService';
+import { sseMiddleware } from '../middleware/sse';
 
 const router = new Router();
 const systemService = new SystemService();
 
 // SSE消息推送
 router.get('/sse', async (ctx) => {
-  ctx.set('Content-Type', 'text/event-stream');
-  ctx.set('Cache-Control', 'no-cache');
-  ctx.set('Connection', 'keep-alive');
-
+  router.use(sseMiddleware);
   // 保持连接
   ctx.req.socket.setTimeout(0);
   ctx.req.socket.setNoDelay(true);

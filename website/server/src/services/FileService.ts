@@ -42,7 +42,7 @@ export class FileService {
 
     await new Promise((resolve, reject) => {
       reader.pipe(writer);
-      reader.on('end', resolve);
+      reader.on('end', () => resolve(true));
       reader.on('error', reject);
     });
 

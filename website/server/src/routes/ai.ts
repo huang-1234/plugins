@@ -1,12 +1,19 @@
 import Router from 'koa-router';
-import { AIService } from '../services/AIService';
+import { AIService } from '../services/ai-service/ai-service';
 
 const router = new Router();
 const aiService = new AIService();
 
+router.use(async (ctx, next) => {
+  ctx.set('Access-Control-Allow-Origin', '*');
+  ctx.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  ctx.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  await next();
+});
+
 // LangChain代理路由
 router.post('/chat', async (ctx) => {
-  const { message, history } = ctx.request.body;
+  const { message, history } = (ctx.request as any)?.body as { message: string; history?: any[] };
 
   if (!message) {
     ctx.status = 400;
@@ -31,7 +38,7 @@ router.post('/chat', async (ctx) => {
 
 // 流式响应
 router.post('/stream', async (ctx) => {
-  const { message, history } = ctx.request.body;
+  const { message, history } = (ctx.request as any)?.body as { message: string; history?: any[] };
 
   if (!message) {
     ctx.status = 400;

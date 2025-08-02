@@ -2,13 +2,14 @@ import Router from 'koa-router';
 import path from 'path';
 import fs from 'fs';
 import { FileService } from '../services/FileService';
+import { IKoaRouterContext } from '../types/koa';
 
 const router = new Router();
 const fileService = new FileService();
 
 // 文件上传路由
 router.post('/', async (ctx) => {
-  const files = ctx.request.files;
+  const files = (ctx.request as any)?.files as { file: File };
 
   if (!files || !files.file) {
     ctx.status = 400;
@@ -27,7 +28,7 @@ router.post('/', async (ctx) => {
 
 // 合并分片
 router.post('/merge', async (ctx) => {
-  const { fileHash, fileName, size } = ctx.request.body;
+  const { fileHash, fileName, size } = (ctx.request as any)?.body as { fileHash: string; fileName: string; size: number };
 
   if (!fileHash || !fileName) {
     ctx.status = 400;
@@ -45,7 +46,7 @@ router.post('/merge', async (ctx) => {
 
 // 检查文件是否已存在
 router.post('/check', async (ctx) => {
-  const { fileHash, fileName } = ctx.request.body;
+  const { fileHash, fileName } = (ctx.request as any)?.body as { fileHash: string; fileName: string };
 
   if (!fileHash) {
     ctx.status = 400;

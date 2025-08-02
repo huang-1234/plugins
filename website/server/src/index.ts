@@ -55,10 +55,42 @@ app.use(router.routes());
 app.use(router.allowedMethods());
 
 // 启动服务
-const PORT = process.env.PORT || 7788;
-app.listen(PORT, () => {
-  console.log(`服务器已启动，监听端口: ${PORT}`);
-});
+const findAvailablePort = async (startPort: number): Promise<number> => {
+  const net = require('net');
+
+  return new Promise((resolve) => {
+    const server = net.createServer();
+    server.unref();
+
+    let port = startPort;
+
+    server.on('error', () => {
+      // 端口被占用，尝试下一个端口
+      port++;
+      server.listen(port);
+    });
+
+    server.on('listening', () => {
+      // 找到可用端口
+      server.close(() => {
+        resolve(port);
+      });
+    });
+
+    server.listen(port);
+  });
+};
+
+// 启动服务器
+(async () => {
+  const preferredPort = parseInt(process.env.PORT || '7788');
+  const port = await findAvailablePort(preferredPort);
+
+  app.listen(port, () => {
+    console.log(`服务器已启动，监听端口: ${port}`);
+    console.log(`服务器地址为 http://localhost:${port}`);
+  });
+})();
 
 // 导出app实例，用于测试
 export default app;

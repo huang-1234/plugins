@@ -1,11 +1,13 @@
 import WebSocket from 'ws';
-import { AIService } from './AIService';
+import { AIService } from './ai-service/ai-openai';
 
 export class WebSocketService {
   private wss: WebSocket.Server;
   private aiService: AIService;
+  private port: number;
 
   constructor(port: number = 3001) {
+    this.port = port;
     this.wss = new WebSocket.Server({ port });
     this.aiService = new AIService();
 
@@ -54,7 +56,7 @@ export class WebSocketService {
       });
     });
 
-    console.log(`WebSocket服务已启动，监听端口: ${port}`);
+    console.log(`WebSocket服务已启动，监听端口: ${this.port}`);
   }
 
   /**
