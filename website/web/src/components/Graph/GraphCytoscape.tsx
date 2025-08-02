@@ -44,6 +44,7 @@ const GraphCytoscape: React.FC<GraphCytoscapeProps> = ({
   const [isFirstRender, setIsFirstRender] = useState(true);
   const nodePositionsRef = useRef(new Map());
   const prevLayoutNameRef = useRef(layoutName);
+  const draggedNodeRef = useRef<any>(null);
 
   // 处理数据变化，转换为Cytoscape元素格式
   useEffect(() => {
@@ -73,22 +74,139 @@ const GraphCytoscape: React.FC<GraphCytoscapeProps> = ({
     cy.nodes().unlock();
 
     // 应用新布局
-    const layout = cy.layout({
-      name: layoutName,
-      animate: true,
-      animationDuration: 500,
-      fit: true,
-      padding: 30,
-      ...createLayoutConfig(layoutName)
-    });
+    const layout = cy.layout(createLayoutConfig(layoutName));
 
     layout.run();
 
     // 布局完成后锁定节点
     layout.one('layoutstop', () => {
-      cy.nodes().lock();
+      // 不锁定节点，允许拖动
+      // cy.nodes().lock();
+
+      // 保存节点位置
+      cy.nodes().forEach((node: any) => {
+        nodePositionsRef.current.set(node.id(), {
+          x: node.position('x'),
+          y: node.position('y')
+        });
+      });
     });
   }, [layoutName]);
+
+  // 防止节点重叠
+  const preventNodeOverlap = (cy: any, targetNode?: any) => {
+    const nodes = cy.nodes();
+    const nodeRadius = 20; // 节点半径
+    const minDistance = nodeRadius * 2.5; // 最小距离
+
+    if (targetNode) {
+      // 只检查目标节点与其他节点的重叠
+      const otherNodes = nodes.not(targetNode);
+      const posA = targetNode.position();
+
+      otherNodes.forEach((nodeB: any) => {
+        const posB = nodeB.position();
+
+        // 计算两节点间距离
+        const dx = posB.x - posA.x;
+        const dy = posB.y - posA.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        // 如果距离小于最小距离，调整位置
+        if (distance < minDistance) {
+          // 计算移动方向
+          const angle = Math.atan2(dy, dx);
+          const moveX = (minDistance - distance) * Math.cos(angle);
+          const moveY = (minDistance - distance) * Math.sin(angle);
+
+          // 只移动目标节点
+          targetNode.position({
+            x: posA.x - moveX,
+            y: posA.y - moveY
+          });
+        }
+      });
+    } else {
+      // 检查所有节点对
+      for (let i = 0; i < nodes.length; i++) {
+        const nodeA = nodes[i];
+        const posA = nodeA.position();
+
+        for (let j = i + 1; j < nodes.length; j++) {
+          const nodeB = nodes[j];
+          const posB = nodeB.position();
+
+          // 计算两节点间距离
+          const dx = posB.x - posA.x;
+          const dy = posB.y - posA.y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+
+          // 如果距离小于最小距离，调整位置
+          if (distance < minDistance) {
+            // 计算移动方向
+            const angle = Math.atan2(dy, dx);
+            const moveX = (minDistance - distance) * Math.cos(angle) * 0.5;
+            const moveY = (minDistance - distance) * Math.sin(angle) * 0.5;
+
+            // 移动两个节点
+            nodeA.position({
+              x: posA.x - moveX,
+              y: posA.y - moveY
+            });
+
+            nodeB.position({
+              x: posB.x + moveX,
+              y: posB.y + moveY
+            });
+          }
+        }
+      }
+    }
+
+    // 保存调整后的节点位置
+    nodes.forEach((node: any) => {
+      nodePositionsRef.current.set(node.id(), {
+        x: node.position('x'),
+        y: node.position('y')
+      });
+    });
+  };
+
+  // 确保节点在视图范围内
+  const ensureNodesInViewport = (cy: any, targetNode?: any) => {
+    const padding = 50;
+    const extent = cy.extent();
+    const viewportMinX = extent.x1 + padding;
+    const viewportMaxX = extent.x2 - padding;
+    const viewportMinY = extent.y1 + padding;
+    const viewportMaxY = extent.y2 - padding;
+
+    if (targetNode) {
+      // 只调整目标节点
+      const pos = targetNode.position();
+      let newX = pos.x;
+      let newY = pos.y;
+
+      if (pos.x < viewportMinX) newX = viewportMinX;
+      if (pos.x > viewportMaxX) newX = viewportMaxX;
+      if (pos.y < viewportMinY) newY = viewportMinY;
+      if (pos.y > viewportMaxY) newY = viewportMaxY;
+
+      if (newX !== pos.x || newY !== pos.y) {
+        targetNode.position({ x: newX, y: newY });
+        nodePositionsRef.current.set(targetNode.id(), { x: newX, y: newY });
+      }
+    } else {
+      // 调整所有节点，使用fit
+      cy.fit(cy.elements(), padding);
+
+      // 更新所有节点位置
+      cy.nodes().forEach((node: any) => {
+        const pos = node.position();
+        nodePositionsRef.current.set(node.id(), { x: pos.x, y: pos.y });
+      });
+    }
+  };
 
   // 注册Cytoscape事件处理
   const registerEventHandlers = (cy: cytoscape.Core) => {
@@ -102,6 +220,24 @@ const GraphCytoscape: React.FC<GraphCytoscapeProps> = ({
     cy.on('tap', 'edge', (event) => {
       const edge = event.target.data();
       if (onEdgeClick) onEdgeClick(edge);
+    });
+
+    // 节点拖动开始
+    cy.on('grab', 'node', (e) => {
+      const node = e.target;
+      draggedNodeRef.current = node;
+    });
+
+    // 节点拖动结束
+    cy.on('free', 'node', (e) => {
+      const node = e.target;
+
+      // 防止节点重叠和确保在视图内
+      preventNodeOverlap(cy, node);
+      ensureNodesInViewport(cy, node);
+
+      // 重置拖动节点引用
+      draggedNodeRef.current = null;
     });
 
     // 保存节点位置
@@ -130,9 +266,14 @@ const GraphCytoscape: React.FC<GraphCytoscapeProps> = ({
       layout.run();
       setIsFirstRender(false);
 
-      // 布局完成后锁定节点
+      // 布局完成后保存节点位置，但不锁定节点
       layout.one('layoutstop', () => {
-        cy.nodes().lock();
+        cy.nodes().forEach((node: any) => {
+          nodePositionsRef.current.set(node.id(), {
+            x: node.position('x'),
+            y: node.position('y')
+          });
+        });
       });
     } else if (preservePositions) {
       // 恢复已有节点的位置
@@ -153,18 +294,31 @@ const GraphCytoscape: React.FC<GraphCytoscapeProps> = ({
         });
         layout.run();
 
-        // 布局完成后锁定节点
+        // 布局完成后保存节点位置
         layout.one('layoutstop', () => {
-          cy.nodes().lock();
+          newNodes.forEach((node: any) => {
+            nodePositionsRef.current.set(node.id(), {
+              x: node.position('x'),
+              y: node.position('y')
+            });
+          });
+
+          // 防止新节点与现有节点重叠
+          preventNodeOverlap(cy);
         });
       }
     } else {
       const layout = cy.layout(createLayoutConfig(layoutName));
       layout.run();
 
-      // 布局完成后锁定节点
+      // 布局完成后保存节点位置
       layout.one('layoutstop', () => {
-        cy.nodes().lock();
+        cy.nodes().forEach((node: any) => {
+          nodePositionsRef.current.set(node.id(), {
+            x: node.position('x'),
+            y: node.position('y')
+          });
+        });
       });
     }
   };
