@@ -69,6 +69,8 @@ plugins/
 │ └── performance-monitor/ # 性能监控库
 ├── vscode/ # VSCode扩展
 └── website/ # 文档网站
+│ ├── server/ # 后端服务
+│ └── web/ # 前端应用
 
 
 ## 最佳实践
