@@ -31,6 +31,26 @@
   flex-direction: column;
 }
 
+.configCollapse {
+  width: 100%;
+
+  :global(.ant-collapse-content-box) {
+    padding: @spacing-md;
+  }
+}
+
+.configPanel {
+  background-color: @component-background;
+}
+
+.legendCollapse {
+  width: 100%;
+
+  :global(.ant-collapse-content-box) {
+    padding: @spacing-md;
+  }
+}
+
 .controlsCard {
   min-height: 180px;
 }
@@ -41,6 +61,8 @@
 
 .controlLabel {
   margin-right: @spacing-md;
+  display: inline-block;
+  width: 80px;
 }
 
 .graphCard {

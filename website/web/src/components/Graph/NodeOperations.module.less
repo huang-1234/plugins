@@ -1,0 +1,24 @@
+.nodeOperations {
+  margin-bottom: @spacing-md;
+}
+
+.nodeContextMenu {
+  position: fixed;
+  background-color: @component-background;
+  border: 1px solid @border-color;
+  border-radius: @border-radius-base;
+  box-shadow: @box-shadow-base;
+  padding: @spacing-xs 0;
+  z-index: 1000;
+  min-width: 120px;
+}
+
+.menuItem {
+  padding: @spacing-xs @spacing-md;
+  cursor: pointer;
+  .transition-base();
+
+  &:hover {
+    background-color: @background-color;
+  }
+}

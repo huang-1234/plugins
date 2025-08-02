@@ -1,39 +1,90 @@
-import React, { useState } from 'react';
-import { Card, Radio, Space, Typography, Button } from 'antd';
-import GraphCytoscape from '../../../components/Graph/GraphCytoscape';
-import EnhancedGraphCytoscape from '../../../modules/graph/GraphCytoscape';
-import { GraphData } from '../../../model/graph/tool';
+import React, { useState, useCallback } from 'react';
+import { Card, Space, Typography, Collapse } from 'antd';
+import GraphCytoscape from '@/components/Graph/GraphCytoscape';
+import EnhancedGraphCytoscape from '@/components/Graph/EnhancedGraphCytoscape';
+import NodeOperations from '@/components/Graph/NodeOperations';
+import { GraphData, GraphNode, GraphEdge } from '@/model/graph/tool';
 import styles from './index.module.less';
 import { langGraphData, sampleData } from '@/model/graph/data';
+import GraphLegend from './GraphLegend';
+import GraphControls from './GraphControls';
 
 const { Title, Paragraph } = Typography;
+const { Panel } = Collapse;
 
 const GraphPage: React.FC = () => {
-  const [selectedData, setSelectedData] = useState<GraphData>(sampleData);
+  const [graphData, setGraphData] = useState<GraphData>(sampleData);
   const [layoutName, setLayoutName] = useState<string>('cose');
-  const [useEnhanced, setUseEnhanced] = useState<boolean>(false);
+  const [useEnhanced, setUseEnhanced] = useState<boolean>(true);
+  const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
 
   // 处理节点点击事件
-  const handleNodeClick = (node: any) => {
+  const handleNodeClick = (node: GraphNode) => {
     console.log('节点点击:', node);
+    setSelectedNodeId(node.id);
   };
 
   // 处理边点击事件
-  const handleEdgeClick = (edge: any) => {
+  const handleEdgeClick = (edge: GraphEdge) => {
     console.log('边点击:', edge);
   };
 
-  // 随机添加新节点（用于测试动态更新）
-  const addRandomNode = () => {
-    const newNodeId = `node_${Math.floor(Math.random() * 1000)}`;
-    const randomStatus = ['running', 'success', 'failed', undefined][Math.floor(Math.random() * 4)];
-    const randomTarget = selectedData.nodes[Math.floor(Math.random() * selectedData.nodes.length)].id;
-
-    setSelectedData(prev => ({
-      nodes: [...prev.nodes, { id: newNodeId, label: `随机节点 ${newNodeId}`, status: randomStatus as any }],
-      edges: [...prev.edges, { source: randomTarget, target: newNodeId, weight: Math.random() }]
+  // 添加新节点
+  const handleAddNode = useCallback((node: GraphNode) => {
+    setGraphData(prev => ({
+      nodes: [...prev.nodes, node],
+      edges: [...prev.edges]
     }));
-  };
+  }, []);
+
+  // 添加新边
+  const handleAddEdge = useCallback((source: string, target: string, weight: number = 1) => {
+    setGraphData(prev => ({
+      nodes: [...prev.nodes],
+      edges: [...prev.edges, { source, target, weight }]
+    }));
+  }, []);
+
+  // 处理添加出度节点
+  const handleAddOutgoingEdge = useCallback((nodeId: string) => {
+    // 生成随机ID
+    const newNodeId = `node_${Math.floor(Math.random() * 1000)}`;
+
+    // 添加新节点
+    const newNode: GraphNode = {
+      id: newNodeId,
+      label: `${nodeId}的出度节点`
+    };
+
+    // 添加新节点和边
+    setGraphData(prev => ({
+      nodes: [...prev.nodes, newNode],
+      edges: [...prev.edges, { source: nodeId, target: newNodeId, weight: 1 }]
+    }));
+  }, []);
+
+  // 处理添加入度节点
+  const handleAddIncomingEdge = useCallback((nodeId: string) => {
+    // 生成随机ID
+    const newNodeId = `node_${Math.floor(Math.random() * 1000)}`;
+
+    // 添加新节点
+    const newNode: GraphNode = {
+      id: newNodeId,
+      label: `${nodeId}的入度节点`
+    };
+
+    // 添加新节点和边
+    setGraphData(prev => ({
+      nodes: [...prev.nodes, newNode],
+      edges: [...prev.edges, { source: newNodeId, target: nodeId, weight: 1 }]
+    }));
+  }, []);
+
+  // 切换数据集
+  const handleDatasetChange = useCallback((value: string) => {
+    setGraphData(value === 'sample' ? sampleData : langGraphData);
+  }, []);
 
   return (
     <div className={styles.graphPageContainer}>
@@ -45,53 +96,29 @@ const GraphPage: React.FC = () => {
       </div>
 
       <div className={styles.cardContainer}>
-        <Card
-          title="配置选项"
-          size="small"
-          className={`${styles.card} ${styles.controlsCard}`}
-          bodyStyle={{ flex: 1, display: 'flex', flexDirection: 'column' }}
+        <Collapse
+          defaultActiveKey={['controls']}
+          className={styles.configCollapse}
         >
-          <div className={styles.cardContent}>
-            <Space direction="vertical">
-              <div className={styles.controlItem}>
-                <span className={styles.controlLabel}>数据集:</span>
-                <Radio.Group
-                  value={selectedData === sampleData ? 'sample' : 'langgraph'}
-                  onChange={(e) => setSelectedData(e.target.value === 'sample' ? sampleData : langGraphData)}
-                >
-                  <Radio.Button value="sample">简单流程图</Radio.Button>
-                  <Radio.Button value="langgraph">LangGraph示例</Radio.Button>
-                </Radio.Group>
-              </div>
+          <Panel header="配置选项" key="controls" className={styles.configPanel}>
+            <div className={styles.cardContent}>
+              <GraphControls
+                selectedData={graphData === sampleData ? 'sample' : 'langgraph'}
+                layoutName={layoutName}
+                useEnhanced={useEnhanced}
+                onDatasetChange={handleDatasetChange}
+                onLayoutChange={setLayoutName}
+                onVersionChange={setUseEnhanced}
+              />
 
-              <div className={styles.controlItem}>
-                <span className={styles.controlLabel}>布局算法:</span>
-                <Radio.Group value={layoutName} onChange={(e) => setLayoutName(e.target.value)}>
-                  <Radio.Button value="cose">力导向布局</Radio.Button>
-                  <Radio.Button value="circle">圆形布局</Radio.Button>
-                  <Radio.Button value="grid">网格布局</Radio.Button>
-                  <Radio.Button value="breadthfirst">树形布局</Radio.Button>
-                </Radio.Group>
-              </div>
-
-              <div className={styles.controlItem}>
-                <span className={styles.controlLabel}>组件版本:</span>
-                <Radio.Group value={useEnhanced} onChange={(e) => setUseEnhanced(e.target.value)}>
-                  <Radio.Button value={false}>基础版</Radio.Button>
-                  <Radio.Button value={true}>增强版</Radio.Button>
-                </Radio.Group>
-              </div>
-
-              <Button
-                type="primary"
-                onClick={addRandomNode}
-                className={styles.addNodeButton}
-              >
-                添加随机节点
-              </Button>
-            </Space>
-          </div>
-        </Card>
+              <NodeOperations
+                graphData={graphData}
+                onAddNode={handleAddNode}
+                onAddEdge={handleAddEdge}
+              />
+            </div>
+          </Panel>
+        </Collapse>
 
         <Card
           title="图可视化"
@@ -101,19 +128,18 @@ const GraphPage: React.FC = () => {
           <div className={styles.graphContainer}>
             {useEnhanced ? (
               <EnhancedGraphCytoscape
-                data={selectedData}
+                data={graphData}
                 layoutName={layoutName}
                 height="100%"
                 width="100%"
                 onNodeClick={handleNodeClick}
                 onEdgeClick={handleEdgeClick}
-                enableNodeDragging={true}
-                enableZoomControls={true}
-                enableExport={true}
+                onAddOutgoingEdge={handleAddOutgoingEdge}
+                onAddIncomingEdge={handleAddIncomingEdge}
               />
             ) : (
               <GraphCytoscape
-                data={selectedData}
+                data={graphData}
                 layoutName={layoutName}
                 height="100%"
                 width="100%"
@@ -124,30 +150,14 @@ const GraphPage: React.FC = () => {
           </div>
         </Card>
 
-        <Card
-          title="节点状态说明"
-          className={`${styles.card} ${styles.legendCard}`}
-          bodyStyle={{ flex: 1, display: 'flex', flexDirection: 'column' }}
+        <Collapse
+          defaultActiveKey={['legend']}
+          className={styles.legendCollapse}
         >
-          <div className={styles.legendContainer}>
-            <div className={styles.legendItem}>
-              <div className={`${styles.legendColor} ${styles.defaultColor}`} />
-              <span>默认状态</span>
-            </div>
-            <div className={styles.legendItem}>
-              <div className={`${styles.legendColor} ${styles.runningColor}`} />
-              <span>运行中 (running)</span>
-            </div>
-            <div className={styles.legendItem}>
-              <div className={`${styles.legendColor} ${styles.successColor}`} />
-              <span>成功 (success)</span>
-            </div>
-            <div className={styles.legendItem}>
-              <div className={`${styles.legendColor} ${styles.failedColor}`} />
-              <span>失败 (failed)</span>
-            </div>
-          </div>
-        </Card>
+          <Panel header="节点状态说明" key="legend">
+            <GraphLegend />
+          </Panel>
+        </Collapse>
       </div>
     </div>
   );
