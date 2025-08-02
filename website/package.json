@@ -12,7 +12,7 @@
     "perfor-monitor": "workspace:*"
   },
   "devDependencies": {
-    "concurrently": "^8.2.0",
+    "concurrently": "^8.2.2",
     "turbo": "^1.10.0"
   }
 }

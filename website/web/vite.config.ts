@@ -15,6 +15,18 @@ export default defineConfig({
       external: ['@libs/*'] // 排除monorepo内部包
     }
   },
+  css: {
+    preprocessorOptions: {
+      less: {
+        javascriptEnabled: true,
+        additionalData: '@import "@/styles/variables.less";',
+      },
+    },
+    modules: {
+      localsConvention: 'camelCase',
+      generateScopedName: '[local]_[hash:base64:5]',
+    },
+  },
   server: {
     port: 5173,
     proxy: {

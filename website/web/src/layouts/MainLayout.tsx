@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { Layout, Menu, Input } from 'antd';
 import { SearchOutlined, UserOutlined } from '@ant-design/icons';
-import FeatureMenu from '@/components/FeatureMenu';
+import FeatureMenu from '@/layouts/FeatureMenu';
 import UserPanel from '@/components/UserPanel';
 import HotRecommendations from '@/components/HotRecommendations';
 import SearchBar from '@/components/SearchBar';
