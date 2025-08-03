@@ -34,6 +34,7 @@ const GraphControls: React.FC<GraphControlsProps> = (props) => {
           value={layoutName}
           onChange={(e) => onLayoutChange(e.target.value)}
           options={[
+            { label: '拓扑排序布局', value: 'topological' },
             { label: '力导向布局', value: 'cose' },
             { label: '圆形布局', value: 'circle' },
             { label: '网格布局', value: 'grid' },

@@ -3,7 +3,7 @@ import { Card, Space, Typography, Collapse } from 'antd';
 import GraphCytoscape from '@/components/Graph/GraphCytoscape';
 import EnhancedGraphCytoscape from '@/components/Graph/EnhancedGraphCytoscape';
 import NodeOperations from '@/components/Graph/NodeOperations';
-import { GraphData, GraphNode, GraphEdge } from '@/model/graph/tool';
+import { GraphData, GraphNode, GraphEdge, createLayoutConfig } from '@/model/graph/tool';
 import styles from './index.module.less';
 import { langGraphData, sampleData } from '@/model/graph/data';
 import GraphLegend from './GraphLegend';
@@ -101,12 +101,12 @@ const GraphPage: React.FC = () => {
       // 解锁所有节点以便重新布局
       cy.nodes().unlock();
 
+      // 获取完整的布局配置
+      const layoutConfig = createLayoutConfig(value);
+      console.log('应用布局配置:', layoutConfig);
+
       // 应用新布局
-      const layout = cy.layout({
-        name: value,
-        fit: true,
-        padding: 50
-      });
+      const layout = cy.layout(layoutConfig);
       layout.run();
     }
   }, []);

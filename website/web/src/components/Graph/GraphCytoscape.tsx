@@ -8,7 +8,8 @@ import {
   convertAdjListToCytoscape,
   createBaseStyles,
   createLayoutConfig,
-  processNodeData
+  processNodeData,
+  topologicalSort
 } from '../../model/graph/tool';
 import styles from './GraphCytoscape.module.less';
 
@@ -58,15 +59,22 @@ const GraphCytoscape: React.FC<GraphCytoscapeProps> = ({
       nodes: processNodeData(data.nodes),
       edges: data.edges
     };
-    console.log('processedData', processedData);
+
+    // 如果是拓扑排序布局，预处理节点
+    if (layoutName === 'topological') {
+      // 执行拓扑排序
+      const sortedNodes = topologicalSort(processedData.nodes, processedData.edges);
+      processedData.nodes = sortedNodes;
+    }
 
     // 转换为Cytoscape元素格式
     const cytoscapeElements = convertAdjListToCytoscape(processedData);
+    console.log('processedData', processedData);
     setElements(cytoscapeElements);
 
     // 记录当前节点数量，用于后续判断是否添加了新节点
     prevNodesCountRef.current = data.nodes.length;
-  }, [data]);
+  }, [data, layoutName]);
 
   // 布局名称变更时，应用新布局
   useEffect(() => {
@@ -83,8 +91,11 @@ const GraphCytoscape: React.FC<GraphCytoscapeProps> = ({
     // 解锁所有节点以便重新布局
     cy.nodes().unlock();
 
-    // 应用新布局
+    // 获取完整的布局配置
     const layoutConfig = createLayoutConfig(layoutName);
+    console.log('应用布局配置:', layoutConfig);
+
+    // 应用新布局
     const layout = cy.layout(layoutConfig);
 
     layout.run();
@@ -362,6 +373,7 @@ const GraphCytoscape: React.FC<GraphCytoscapeProps> = ({
     if (isFirstRender) {
       // 首次渲染，应用完整布局
       const layoutConfig = createLayoutConfig(layoutName);
+      console.log('初始布局配置:', layoutConfig);
       const layout = cy.layout(layoutConfig);
 
       layout.run();
@@ -432,7 +444,9 @@ const GraphCytoscape: React.FC<GraphCytoscapeProps> = ({
       }
     } else {
       // 不保留位置，应用完整布局
-      const layout = cy.layout(createLayoutConfig(layoutName));
+      const layoutConfig = createLayoutConfig(layoutName);
+      console.log('重新应用布局配置:', layoutConfig);
+      const layout = cy.layout(layoutConfig);
       layout.run();
 
       // 布局完成后保存节点位置
