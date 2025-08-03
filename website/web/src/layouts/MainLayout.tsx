@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
-import { Layout, Image, Input } from 'antd';
-import { SearchOutlined, UserOutlined } from '@ant-design/icons';
+import { Layout, Image } from 'antd';
 import FeatureMenu from '@/layouts/FeatureMenu';
 import UserPanel from '@/components/UserPanel';
 import HotRecommendations from '@/components/HotRecommendations';
 import SearchBar from '@/components/SearchBar';
 import logo from '@/assets/svg/logo-32.svg';
+import React from 'react';
 const { Header, Sider, Content } = Layout;
 
 const MainLayout = () => {
@@ -59,4 +59,4 @@ const MainLayout = () => {
   );
 };
 
-export default MainLayout;
+export default React.memo(MainLayout);

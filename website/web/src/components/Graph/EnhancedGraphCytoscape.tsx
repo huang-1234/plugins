@@ -130,4 +130,4 @@ const EnhancedGraphCytoscape: React.FC<EnhancedGraphCytoscapeProps> = ({
   );
 };
 
-export default EnhancedGraphCytoscape;
+export default React.memo(EnhancedGraphCytoscape);

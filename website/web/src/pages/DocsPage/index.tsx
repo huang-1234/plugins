@@ -50,4 +50,4 @@ const DocumentPage = () => {
   );
 };
 
-export default DocumentPage;
+export default React.memo(DocumentPage);

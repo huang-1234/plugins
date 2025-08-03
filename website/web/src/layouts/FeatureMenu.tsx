@@ -39,4 +39,4 @@ const FeatureMenu = () => {
   );
 };
 
-export default FeatureMenu;
+export default React.memo(FeatureMenu);

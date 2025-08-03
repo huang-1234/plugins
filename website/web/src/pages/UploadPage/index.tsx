@@ -91,4 +91,4 @@ const UploadPage = () => {
   );
 };
 
-export default UploadPage;
+export default React.memo(UploadPage);

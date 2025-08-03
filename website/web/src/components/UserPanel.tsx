@@ -32,4 +32,4 @@ const UserPanel = () => {
   );
 };
 
-export default UserPanel;
+export default React.memo(UserPanel);

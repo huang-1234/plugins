@@ -24,4 +24,4 @@ const GraphLegend: React.FC = () => {
   );
 };
 
-export default GraphLegend;
+export default React.memo(GraphLegend);

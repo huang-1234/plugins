@@ -61,4 +61,4 @@ const HotRecommendations = (props: HotRecommendationsProps) => {
   );
 };
 
-export default HotRecommendations;
+export default React.memo(HotRecommendations);

@@ -3,6 +3,7 @@ import MainLayout from './layouts/MainLayout';
 import HomePage from './pages/HomePage';
 import './App.css';
 import {  menuItems } from './layouts/RouterMenu';
+import React from 'react';
 
 function App() {
   const _renderMenuPage = () => {
@@ -33,4 +34,4 @@ function App() {
   );
 }
 
-export default App;
+export default React.memo(App);
