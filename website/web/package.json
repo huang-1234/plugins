@@ -1,0 +1,52 @@
+{
+  "name": "@website/web",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview"
+  },
+  "resolutions": {
+    "@types/react": "18.2.25",
+    "@types/react-dom": "18.2.25"
+  },
+  "dependencies": {
+    "@ant-design/icons": "6.0.0",
+    "antd": "5.26.7",
+    "axios": "1.11.0",
+    "cytoscape": "^3.33.0",
+    "files-buffer": "workspace:*",
+    "immer": "^10.1.1",
+    "lite-store-react": "0.1.2-alpha.0",
+    "loadable-components": "^2.2.3",
+    "perfor-monitor": "workspace:*",
+    "react": "18.2.0",
+    "react-cytoscapejs": "^2.0.0",
+    "react-dom": "18.2.0",
+    "react-markdown": "^9.0.1",
+    "react-router-dom": "^6.22.0",
+    "react-syntax-highlighter": "^15.5.0"
+  },
+  "devDependencies": {
+    "@types/cytoscape": "^3.21.9",
+    "@types/loadable__component": "^5.13.10",
+    "@types/node": "20.19.9",
+    "@types/react": "18.2.25",
+    "@types/react-cytoscapejs": "^1.2.5",
+    "@types/react-dom": "18.2.25",
+    "@types/react-syntax-highlighter": "15.5.11",
+    "@typescript-eslint/eslint-plugin": "6.0.0",
+    "@typescript-eslint/parser": "6.0.0",
+    "@vitejs/plugin-react": "4.0.3",
+    "concurrently": "^8.2.2",
+    "eslint": "8.45.0",
+    "eslint-plugin-react-hooks": "4.6.0",
+    "eslint-plugin-react-refresh": "0.4.3",
+    "less": "^4.4.0",
+    "typescript": "5.8.3",
+    "vite": "5.4.19"
+  }
+}

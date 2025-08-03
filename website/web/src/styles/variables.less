@@ -1,0 +1,77 @@
+// 颜色变量
+@primary-color: #1890ff;
+@success-color: #52c41a;
+@warning-color: #faad14;
+@error-color: #f5222d;
+@text-color: rgba(0, 0, 0, 0.85);
+@text-color-secondary: rgba(0, 0, 0, 0.45);
+@disabled-color: rgba(0, 0, 0, 0.25);
+@border-color: #d9d9d9;
+@background-color: #f0f2f5;
+@component-background: #fff;
+
+// 字体变量
+@font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue',
+  Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+  'Noto Color Emoji';
+@font-size-base: 14px;
+@font-size-sm: 12px;
+@font-size-lg: 16px;
+@font-size-xl: 20px;
+
+// 间距变量
+@spacing-xs: 4px;
+@spacing-sm: 8px;
+@spacing-md: 16px;
+@spacing-lg: 24px;
+@spacing-xl: 32px;
+
+// 边框变量
+@border-radius-base: 2px;
+@border-radius-sm: 2px;
+@border-radius-lg: 4px;
+@border-width-base: 1px;
+
+// 阴影变量
+@box-shadow-base: 0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 6px 16px 0 rgba(0, 0, 0, 0.08),
+  0 9px 28px 8px rgba(0, 0, 0, 0.05);
+@box-shadow-sm: 0 1px 2px -2px rgba(0, 0, 0, 0.16), 0 3px 6px 0 rgba(0, 0, 0, 0.12),
+  0 5px 12px 4px rgba(0, 0, 0, 0.09);
+
+// 媒体查询断点
+@screen-xs: 480px;
+@screen-sm: 576px;
+@screen-md: 768px;
+@screen-lg: 992px;
+@screen-xl: 1200px;
+@screen-xxl: 1600px;
+
+// 布局变量
+@layout-header-height: 64px;
+@layout-footer-height: 64px;
+@layout-body-background: #f0f2f5;
+@layout-header-background: #001529;
+@layout-sider-background: #001529;
+
+// 混合器
+.text-ellipsis() {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.flex-center() {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-between() {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.transition-base() {
+  transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+}

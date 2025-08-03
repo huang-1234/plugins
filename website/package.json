@@ -1,0 +1,18 @@
+{
+  "name": "website",
+  "version": "1.0.0",
+  "description": "项目网站",
+  "scripts": {
+    "dev": "concurrently \"pnpm --filter ./web dev\" \"pnpm --filter ./server dev\"",
+    "build": "turbo run build",
+    "deploy": "pm2 start server/dist/index.js"
+  },
+  "dependencies": {
+    "files-buffer": "workspace:*",
+    "perfor-monitor": "workspace:*"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "turbo": "^1.10.0"
+  }
+}
