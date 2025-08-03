@@ -1,10 +1,8 @@
 import { useCallback } from 'react';
-import { OnNodesChange, OnEdgesChange, OnConnect, Node } from '@xyflow/react';
+import { OnNodesChange, OnEdgesChange, OnConnect, Node, Edge } from '@xyflow/react';
 import { useWorkflowStore, BusinessNodeData, BusinessEdge } from '@/components/workflow';
 
 export const useWorkflowControls = () => {
-  // 添加调试日志
-  console.log('useWorkflowControls: 初始化');
 
   const {
     nodes,
@@ -28,10 +26,20 @@ export const useWorkflowControls = () => {
       changes.forEach(change => {
         if (change.type === 'remove') {
           removeNode(change.id);
+        } else if (change.type === 'position' && change.position) {
+          // 处理节点位置变更
+          const node = nodes.find(n => n.id === change.id);
+          if (node) {
+            const updatedNode = {
+              ...node,
+              position: change.position
+            };
+            setNodes(nodes.map(n => n.id === change.id ? updatedNode : n));
+          }
         }
       });
     },
-    [removeNode]
+    [removeNode, nodes, setNodes]
   );
 
   const onEdgesChange: OnEdgesChange = useCallback(
@@ -96,6 +104,44 @@ export const useWorkflowControls = () => {
     [edges, removeEdge, storeAddEdge]
   );
 
+  // 删除选中的元素
+  const deleteElements = useCallback(
+    ({ nodes: nodesToDelete, edges: edgesToDelete }: {
+      nodes: Node<BusinessNodeData>[];
+      edges: Edge[];
+    }) => {
+      console.log('deleteElements:', { nodesToDelete, edgesToDelete });
+
+      // 删除节点
+      nodesToDelete.forEach((node: Node<BusinessNodeData>) => {
+        removeNode(node.id);
+      });
+
+      // 删除边
+      edgesToDelete.forEach((edge: Edge) => {
+        removeEdge(edge.id);
+      });
+    },
+    [removeNode, removeEdge]
+  );
+
+  // 复制节点
+  const duplicateNode = useCallback(
+    (node: Node<BusinessNodeData>) => {
+      const newNode = {
+        ...node,
+        id: `${node.type}-${Date.now()}`,
+        position: {
+          x: node.position.x + 50,
+          y: node.position.y + 50,
+        },
+        selected: false,
+      };
+      storeAddNode(newNode);
+    },
+    [storeAddNode]
+  );
+
   return {
     nodes,
     edges,
@@ -106,6 +152,8 @@ export const useWorkflowControls = () => {
     onConnect,
     addNode,
     updateNodeStatus,
-    updateEdgeStatus
+    updateEdgeStatus,
+    deleteElements,
+    duplicateNode
   };
 };

@@ -52,6 +52,7 @@
   flex: 1;
   height: calc(100% - 48px);
   position: relative;
+  width: 100%;
 }
 .reactFlow {
   width: 100%;
@@ -66,6 +67,8 @@
   background-color: white;
   cursor: move;
   transition: all 0.2s;
+  user-select: none;
+  /* 防止文本被选中影响拖拽 */
 }
 .nodeItem:hover {
   border-color: #1890ff;
@@ -78,4 +81,26 @@
 .rejectedEdge {
   stroke: #ff4d4f;
   stroke-dasharray: 5 5;
+}
+/* 优化节点样式，提高性能 */
+:global {
+  /* 拖拽时的样式 */
+}
+:global .react-flow__node {
+  transition: none;
+  /* 移除过渡效果，减少拖拽时的卡顿 */
+  will-change: transform;
+  /* 优化变换性能 */
+}
+:global .react-flow__handle {
+  width: 8px;
+  height: 8px;
+}
+:global .react-flow__edge {
+  pointer-events: stroke;
+  /* 只在边线上响应事件，提高性能 */
+}
+:global .react-flow__node-dragging {
+  z-index: 10;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
