@@ -64,7 +64,7 @@ AI Code 是一个综合性前端工具集项目，包含多个独立但相互关
 
 技术特点:
 - 使用 Web Worker 计算文件哈希，避免主线程阻塞
-- 基于 Spark-MD5 进行文件指纹计算
+- 基于 `crypto.subtle.digest('SHA-256', data)` 和 `Spark-MD5` 进行文件指纹计算
 - 提供 React 组件和核心 API 两种使用方式
 - 支持上传控制（暂停/恢复/取消）
 
