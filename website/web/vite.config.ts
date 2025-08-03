@@ -34,15 +34,15 @@ export default defineConfig({
         target: 'http://localhost:7788',
         changeOrigin: true,
       },
-      '/sse': {
+      '/api/sse': {
         target: 'http://localhost:7788',
         changeOrigin: true,
       },
-      '/docs': {
+      '/api/docs': {
         target: 'http://localhost:7788',
         changeOrigin: true,
       },
-      '/uploads': {
+      '/api/uploads': {
         target: 'http://localhost:7788',
         changeOrigin: true,
       }

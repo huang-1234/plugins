@@ -43,7 +43,7 @@ setupSwagger(app);
 // 注册路由
 router.use('/api/upload', fileRoutes.routes());
 router.use('/api/ai', aiRoutes.routes());
-router.use('/docs', docRoutes.routes());
+router.use('/api/docs', docRoutes.routes());
 router.use(sseRoutes.routes());
 
 // 错误处理中间件

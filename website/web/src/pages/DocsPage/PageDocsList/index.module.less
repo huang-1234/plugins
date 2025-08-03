@@ -1,0 +1,27 @@
+.docListCard {
+  height: 100%;
+  overflow-y: auto;
+
+  :global {
+    .ant-list-item {
+      padding: 8px 12px;
+    }
+  }
+}
+
+.docItem {
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 4px;
+  transition: all 0.3s;
+
+  &:hover {
+    background-color: #f5f5f5;
+  }
+
+  &.activeDoc {
+    background-color: #e6f7ff;
+    font-weight: 500;
+    color: #1890ff;
+  }
+}
