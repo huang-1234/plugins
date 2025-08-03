@@ -1,6 +1,7 @@
-import { useCallback } from 'react';
+import { useCallback, useRef } from 'react';
 import { OnNodesChange, OnEdgesChange, OnConnect, Node, Edge } from '@xyflow/react';
 import { useWorkflowStore, BusinessNodeData, BusinessEdge } from '@/components/workflow';
+import { debounce } from 'lodash-es';
 
 export const useWorkflowControls = () => {
 
@@ -19,27 +20,57 @@ export const useWorkflowControls = () => {
   // 添加调试日志
   console.log('useWorkflowControls: 获取到 store 数据', { nodes, edges });
 
+  // 使用 useRef 保存防抖函数的引用，避免每次渲染都创建新的防抖函数
+  const updateNodePositionDebounced = useRef(
+    debounce((nodeId: string, position: { x: number; y: number }) => {
+      console.log('Debounced position update for node:', nodeId, position);
+
+      // 创建一个新的节点数组，而不是使用函数式更新
+      const updatedNodes = nodes.map(node => {
+        if (node.id === nodeId) {
+          return { ...node, position };
+        }
+        return node;
+      });
+
+      // 直接传递新数组
+      setNodes(updatedNodes);
+    }, 16) // 约16ms，接近60fps的更新频率，可以根据需要调整
+  ).current;
+
   const onNodesChange: OnNodesChange = useCallback(
     (changes) => {
       console.log('onNodesChange:', changes);
       // 处理节点变更
       changes.forEach(change => {
         if (change.type === 'remove') {
+          // 删除节点不需要防抖，直接处理
           removeNode(change.id);
         } else if (change.type === 'position' && change.position) {
-          // 处理节点位置变更
+          // 拖拽过程中的位置更新使用防抖处理
+          // 1. 立即更新本地状态，保持UI响应
+          const node = nodes.find(n => n.id === change.id);
+          if (node) {
+            // 只在本地更新节点位置，不触发状态更新
+            node.position = change.position;
+
+            // 使用防抖函数延迟更新状态
+            updateNodePositionDebounced(change.id, change.position);
+          }
+        } else if (change.type === 'select') {
+          // 选择状态变更直接处理，不需要防抖
           const node = nodes.find(n => n.id === change.id);
           if (node) {
             const updatedNode = {
               ...node,
-              position: change.position
+              selected: change.selected
             };
             setNodes(nodes.map(n => n.id === change.id ? updatedNode : n));
           }
         }
       });
     },
-    [removeNode, nodes, setNodes]
+    [removeNode, nodes, setNodes, updateNodePositionDebounced]
   );
 
   const onEdgesChange: OnEdgesChange = useCallback(
