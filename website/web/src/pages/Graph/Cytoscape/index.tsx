@@ -125,7 +125,7 @@ const GraphPage: React.FC = () => {
     <div className={styles.graphPageContainer}>
       <div className={styles.titleSection}>
         <Title level={2}>Cytoscape.js + React 图可视化演示</Title>
-        <Paragraph>
+        <Paragraph style={{ marginBottom: 0 }}>
           基于Cytoscape.js和React 18构建的高性能图数据可视化组件，支持邻接表数据结构和LangGraph框架集成。
         </Paragraph>
       </div>
@@ -135,6 +135,9 @@ const GraphPage: React.FC = () => {
           defaultActiveKey={['controls']}
           className={styles.configCollapse}
         >
+          <Panel header="节点状态说明" key="legend">
+            <GraphLegend />
+          </Panel>
           <Panel header="配置选项" key="controls" className={styles.configPanel}>
             <div className={styles.cardContent}>
               <GraphControls
@@ -195,15 +198,6 @@ const GraphPage: React.FC = () => {
             )}
           </div>
         </Card>
-
-        <Collapse
-          defaultActiveKey={['legend']}
-          className={styles.legendCollapse}
-        >
-          <Panel header="节点状态说明" key="legend">
-            <GraphLegend />
-          </Panel>
-        </Collapse>
       </div>
     </div>
   );
