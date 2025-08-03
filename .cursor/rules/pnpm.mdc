@@ -1,5 +1,5 @@
 ---
-description: "全栈项目技术约束规范"
+description: "全栈项目包管理规范"
 globs: "**/*.{ts,tsx,js,jsx,md,mdx}"  # 覆盖所有代码和文档文件
 priority: 1  # 最高优先级
 last_updated: "2025-08-02"

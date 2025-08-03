@@ -1,3 +1,9 @@
+---
+description: "全栈项目技术规范"
+globs: "**/*.{ts,tsx,js,jsx,md,mdx}"  # 覆盖所有代码和文档文件
+priority: 1  # 最高优先级
+last_updated: "2025-08-03"
+---
 🧠 Cursor 智能编码规则（React18+TS5+Vite / Node.js+TS+Koa / LangGraph+LangChain）
 一、技术栈
 - 前端​：React 18 + TypeScript 5+ + Vite
