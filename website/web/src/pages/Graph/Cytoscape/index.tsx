@@ -86,6 +86,8 @@ const GraphPage: React.FC = () => {
   // 切换数据集
   const onDatasetChange = useCallback((value: string) => {
     setGraphData(value === 'sample' ? sampleData : langGraphData);
+    // 数据集变更时重置布局计数器，强制重新布局
+    setLayoutChangeCounter(prev => prev + 1);
   }, []);
 
   // 切换布局算法
@@ -102,17 +104,10 @@ const GraphPage: React.FC = () => {
       // 应用新布局
       const layout = cy.layout({
         name: value,
-        animate: true,
-        animationDuration: 500,
         fit: true,
-        padding: 30
+        padding: 50
       });
       layout.run();
-
-      // 布局完成后重新锁定节点
-      layout.one('layoutstop', () => {
-        cy.nodes().lock();
-      });
     }
   }, []);
 

@@ -45,6 +45,9 @@ const GraphCytoscape: React.FC<GraphCytoscapeProps> = ({
   const nodePositionsRef = useRef(new Map());
   const prevLayoutNameRef = useRef(layoutName);
   const draggedNodeRef = useRef<any>(null);
+  const prevNodesCountRef = useRef(0);
+  const viewportStateRef = useRef({ zoom: 1, pan: { x: 0, y: 0 } });
+  const prevElementsCountRef = useRef(0);
 
   // 处理数据变化，转换为Cytoscape元素格式
   useEffect(() => {
@@ -60,6 +63,9 @@ const GraphCytoscape: React.FC<GraphCytoscapeProps> = ({
     // 转换为Cytoscape元素格式
     const cytoscapeElements = convertAdjListToCytoscape(processedData);
     setElements(cytoscapeElements);
+
+    // 记录当前节点数量，用于后续判断是否添加了新节点
+    prevNodesCountRef.current = data.nodes.length;
   }, [data]);
 
   // 布局名称变更时，应用新布局
@@ -71,11 +77,15 @@ const GraphCytoscape: React.FC<GraphCytoscapeProps> = ({
     // 如果布局名称变更，应用新布局
     const cy = cyRef.current;
 
+    // 保存当前视图状态
+    saveViewportState(cy);
+
     // 解锁所有节点以便重新布局
     cy.nodes().unlock();
 
     // 应用新布局
-    const layout = cy.layout(createLayoutConfig(layoutName));
+    const layoutConfig = createLayoutConfig(layoutName);
+    const layout = cy.layout(layoutConfig);
 
     layout.run();
 
@@ -91,11 +101,31 @@ const GraphCytoscape: React.FC<GraphCytoscapeProps> = ({
           y: node.position('y')
         });
       });
+
+      // 确保所有节点在视图范围内
+      ensureNodesInViewport(cy);
     });
   }, [layoutName]);
 
+  // 保存视图状态（缩放和平移）
+  const saveViewportState = (cy: any) => {
+    if (!cy) return;
+    viewportStateRef.current = {
+      zoom: cy.zoom(),
+      pan: { ...cy.pan() }
+    };
+  };
+
+  // 恢复视图状态
+  const restoreViewportState = (cy: any) => {
+    if (!cy) return;
+    const { zoom, pan } = viewportStateRef.current;
+    cy.zoom(zoom);
+    cy.pan(pan);
+  };
+
   // 防止节点重叠
-  const preventNodeOverlap = (cy: cytoscape.Core, targetNode?: cytoscape.NodeSingular) => {
+  const preventNodeOverlap = (cy: any, targetNode?: any) => {
     const nodes = cy.nodes();
     const nodeRadius = 20; // 节点半径
     const minDistance = nodeRadius * 2.5; // 最小距离
@@ -105,7 +135,7 @@ const GraphCytoscape: React.FC<GraphCytoscapeProps> = ({
       const otherNodes = nodes.not(targetNode);
       const posA = targetNode.position();
 
-      otherNodes.forEach((nodeB: cytoscape.NodeSingular) => {
+      otherNodes.forEach((nodeB: any) => {
         const posB = nodeB.position();
 
         // 计算两节点间距离
@@ -174,17 +204,18 @@ const GraphCytoscape: React.FC<GraphCytoscapeProps> = ({
   };
 
   // 确保节点在视图范围内
-  const ensureNodesInViewport = (cy: cytoscape.Core, targetNode?: cytoscape.NodeSingular) => {
+  const ensureNodesInViewport = (cy: any, targetNode?: any) => {
     const padding = 50;
-    const extent = cy.extent();
-    const viewportMinX = extent.x1 + padding;
-    const viewportMaxX = extent.x2 - padding;
-    const viewportMinY = extent.y1 + padding;
-    const viewportMaxY = extent.y2 - padding;
 
     if (targetNode) {
       // 只调整目标节点
       const pos = targetNode.position();
+      const extent = cy.extent();
+      const viewportMinX = extent.x1 + padding;
+      const viewportMaxX = extent.x2 - padding;
+      const viewportMinY = extent.y1 + padding;
+      const viewportMaxY = extent.y2 - padding;
+
       let newX = pos.x;
       let newY = pos.y;
 
@@ -198,11 +229,14 @@ const GraphCytoscape: React.FC<GraphCytoscapeProps> = ({
         nodePositionsRef.current.set(targetNode.id(), { x: newX, y: newY });
       }
     } else {
+      // 保存当前视图状态
+      saveViewportState(cy);
+
       // 调整所有节点，使用fit
       cy.fit(cy.elements(), padding);
 
       // 更新所有节点位置
-      cy.nodes().forEach((node: cytoscape.NodeSingular) => {
+      cy.nodes().forEach((node: any) => {
         const pos = node.position();
         nodePositionsRef.current.set(node.id(), { x: pos.x, y: pos.y });
       });
@@ -227,6 +261,9 @@ const GraphCytoscape: React.FC<GraphCytoscapeProps> = ({
     cy.on('grab', 'node', (e) => {
       const node = e.target;
       draggedNodeRef.current = node;
+
+      // 保存当前视图状态
+      saveViewportState(cy);
     });
 
     // 节点拖动结束
@@ -239,6 +276,12 @@ const GraphCytoscape: React.FC<GraphCytoscapeProps> = ({
 
       // 重置拖动节点引用
       draggedNodeRef.current = null;
+    });
+
+    // 视图变化事件（缩放、平移）
+    cy.on('viewport', () => {
+      // 保存视图状态
+      saveViewportState(cy);
     });
 
     // 保存节点位置
@@ -256,29 +299,92 @@ const GraphCytoscape: React.FC<GraphCytoscapeProps> = ({
     if (onGraphReady) onGraphReady(cy);
   };
 
+  // 找到新添加的节点
+  const findNewNodes = (cy: any) => {
+    return cy.nodes().filter((node: any) => !nodePositionsRef.current.has(node.id()));
+  };
+
+  // 为新节点找到合适的位置
+  const positionNewNode = (cy: any, node: any) => {
+    // 查找连接到此节点的其他节点
+    const connectedEdges = node.connectedEdges();
+    const connectedNodes = connectedEdges.connectedNodes().not(node);
+
+    if (connectedNodes.length > 0) {
+      // 如果有连接的节点，根据连接节点的位置计算新位置
+      let avgX = 0;
+      let avgY = 0;
+
+      connectedNodes.forEach((connectedNode: any) => {
+        const pos = connectedNode.position();
+        avgX += pos.x;
+        avgY += pos.y;
+      });
+
+      avgX /= connectedNodes.length;
+      avgY /= connectedNodes.length;
+
+      // 在连接节点的平均位置附近随机放置
+      const offset = 100; // 偏移距离
+      const randomAngle = Math.random() * 2 * Math.PI;
+      const x = avgX + Math.cos(randomAngle) * offset;
+      const y = avgY + Math.sin(randomAngle) * offset;
+
+      node.position({ x, y });
+    } else {
+      // 如果没有连接的节点，放在视图中心附近随机位置
+      const extent = cy.extent();
+      const centerX = (extent.x1 + extent.x2) / 2;
+      const centerY = (extent.y1 + extent.y2) / 2;
+
+      // 在中心点附近随机放置
+      const radius = 100;
+      const randomAngle = Math.random() * 2 * Math.PI;
+      const x = centerX + Math.cos(randomAngle) * radius;
+      const y = centerY + Math.sin(randomAngle) * radius;
+
+      node.position({ x, y });
+    }
+
+    // 保存新节点位置
+    nodePositionsRef.current.set(node.id(), {
+      x: node.position('x'),
+      y: node.position('y')
+    });
+  };
+
   // 当组件获取到Cytoscape实例时
-  const getCyRef = (cy: cytoscape.Core) => {
+  const getCyRef = (cy: any) => {
     cyRef.current = cy;
     registerEventHandlers(cy);
 
     // 应用布局
     if (isFirstRender) {
-      const layout = cy.layout(createLayoutConfig(layoutName));
+      // 首次渲染，应用完整布局
+      const layoutConfig = createLayoutConfig(layoutName);
+      const layout = cy.layout(layoutConfig);
+
       layout.run();
       setIsFirstRender(false);
 
-      // 布局完成后保存节点位置，但不锁定节点
+      // 布局完成后保存节点位置和视图状态
       layout.one('layoutstop', () => {
-        cy.nodes().forEach((node: cytoscape.NodeSingular) => {
+        cy.nodes().forEach((node: any) => {
           nodePositionsRef.current.set(node.id(), {
             x: node.position('x'),
             y: node.position('y')
           });
         });
+
+        // 保存初始视图状态
+        saveViewportState(cy);
+
+        // 记录初始元素数量
+        prevElementsCountRef.current = cy.elements().length;
       });
     } else if (preservePositions) {
       // 恢复已有节点的位置
-      cy.nodes().forEach((node: cytoscape.NodeSingular) => {
+      cy.nodes().forEach((node: any) => {
         const savedPosition = nodePositionsRef.current.get(node.id());
         if (savedPosition) {
           node.position(savedPosition);
@@ -286,29 +392,46 @@ const GraphCytoscape: React.FC<GraphCytoscapeProps> = ({
       });
 
       // 只对新节点应用布局
-      const newNodes = cy.nodes().filter((node: any) => !nodePositionsRef.current.has(node.id()));
+      const newNodes = findNewNodes(cy);
       if (newNodes.length > 0) {
-        const layout = newNodes.layout({
-          name: layoutName,
-          animate: false,
-          fit: false
-        });
-        layout.run();
+        // 保存当前视图状态
+        saveViewportState(cy);
 
-        // 布局完成后保存节点位置
-        layout.one('layoutstop', () => {
-          newNodes.forEach((node: any) => {
-            nodePositionsRef.current.set(node.id(), {
-              x: node.position('x'),
-              y: node.position('y')
-            });
+        // 单独处理每个新节点，而不是使用布局算法
+        newNodes.forEach((node: any) => {
+          positionNewNode(cy, node);
+        });
+
+        // 防止新节点与现有节点重叠
+        preventNodeOverlap(cy);
+
+        // 检查是否添加了新节点（而不是切换数据集）
+        const isNodeAddition = cy.elements().length > prevElementsCountRef.current;
+
+        if (isNodeAddition) {
+          // 如果是添加了新节点，确保所有节点都在视图中
+          cy.fit(cy.elements(), 50);
+        } else {
+          // 如果是切换数据集，只关注新节点
+          cy.fit(newNodes, 50);
+        }
+
+        // 更新元素计数
+        prevElementsCountRef.current = cy.elements().length;
+
+        // 更新新节点的位置
+        cy.nodes().forEach((node: any) => {
+          nodePositionsRef.current.set(node.id(), {
+            x: node.position('x'),
+            y: node.position('y')
           });
-
-          // 防止新节点与现有节点重叠
-          preventNodeOverlap(cy);
         });
+      } else {
+        // 如果没有新节点，恢复视图状态
+        restoreViewportState(cy);
       }
     } else {
+      // 不保留位置，应用完整布局
       const layout = cy.layout(createLayoutConfig(layoutName));
       layout.run();
 
@@ -320,6 +443,12 @@ const GraphCytoscape: React.FC<GraphCytoscapeProps> = ({
             y: node.position('y')
           });
         });
+
+        // 保存视图状态
+        saveViewportState(cy);
+
+        // 更新元素计数
+        prevElementsCountRef.current = cy.elements().length;
       });
     }
   };
@@ -338,7 +467,7 @@ const GraphCytoscape: React.FC<GraphCytoscapeProps> = ({
           key={`graph-${elements.length}-${layoutName}`}
           elements={elements as any}
           className={styles.graphContent}
-          cy={getCyRef}
+          cy={(cy) => getCyRef(cy)}
           stylesheet={createBaseStyles() as any}
           userZoomingEnabled={true}
           userPanningEnabled={true}

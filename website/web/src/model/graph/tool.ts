@@ -65,7 +65,7 @@ export const convertAdjListToCytoscape = (data: GraphData): cytoscape.ElementDef
 /**
  * 创建基础样式配置
  */
-export const createBaseStyles = (): cytoscape.Stylesheet[] => {
+export const createBaseStyles = (): any[] => {
   return [
     // 节点样式
     {
@@ -123,6 +123,7 @@ export const createBaseStyles = (): cytoscape.Stylesheet[] => {
  */
 export const createLayoutConfig = (name: string = 'cose'): cytoscape.LayoutOptions => {
   const layouts: Record<string, cytoscape.LayoutOptions> = {
+    // 新增拓扑排序布局
     // 力导向布局 - 适合大多数图
     'cose': {
       name: 'cose',
@@ -133,14 +134,14 @@ export const createLayoutConfig = (name: string = 'cose'): cytoscape.LayoutOptio
       padding: 30,
       randomize: false,
       componentSpacing: 100,
-      nodeRepulsion: 400000,
-      edgeElasticity: 100,
+      nodeRepulsion: 200000, // 降低了节点排斥力，减少抖动
+      edgeElasticity: 50,    // 降低了边弹性，减少抖动
       nestingFactor: 5,
-      gravity: 80,
-      numIter: 1000,
-      initialTemp: 200,
-      coolingFactor: 0.95,
-      minTemp: 1.0
+      gravity: 50,           // 降低了重力，减少抖动
+      numIter: 1500,         // 增加迭代次数，使布局更稳定
+      initialTemp: 150,      // 降低初始温度，减少抖动
+      coolingFactor: 0.97,   // 提高冷却因子，使布局更平滑
+      minTemp: 0.5           // 降低最小温度，使布局更稳定
     },
     // 圆形布局 - 适合环状结构
     'circle': {
@@ -159,8 +160,7 @@ export const createLayoutConfig = (name: string = 'cose'): cytoscape.LayoutOptio
       fit: true,
       padding: 30,
       avoidOverlap: true,
-      rows: undefined,
-      columns: undefined
+      rows: undefined
     },
     // 树形布局 - 适合层次结构
     'breadthfirst': {
