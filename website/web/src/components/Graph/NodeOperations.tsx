@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Button, Modal, Form, Input, Select, Space } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
+import { LinkOutlined, PlusOutlined } from '@ant-design/icons';
 import { GraphData, GraphNode } from '@/model/graph/tool';
 import styles from './NodeOperations.module.less';
 
@@ -62,6 +62,10 @@ const NodeOperations: React.FC<NodeOperationsProps> = ({ graphData, onAddNode, o
     nodeForm.setFieldsValue({ id: randomId });
   };
 
+  const sourceOptions = useMemo(() => {
+    return graphData.nodes.map(node => ({ label: node.label || node.id, value: node.id }));
+  }, [graphData]);
+
   return (
     <div className={styles.nodeOperations}>
       <Space>
@@ -73,6 +77,7 @@ const NodeOperations: React.FC<NodeOperationsProps> = ({ graphData, onAddNode, o
           添加节点
         </Button>
         <Button
+          icon={<LinkOutlined />}
           onClick={() => showAddEdgeModal()}
         >
           添加连接
@@ -141,12 +146,7 @@ const NodeOperations: React.FC<NodeOperationsProps> = ({ graphData, onAddNode, o
             label="源节点"
             rules={[{ required: true, message: '请选择源节点' }]}
           >
-            <Select placeholder="选择源节点">
-              {graphData.nodes.map(node => (
-                <Option key={node.id} value={node.id}>
-                  {node.label || node.id}
-                </Option>
-              ))}
+            <Select placeholder="选择源节点" options={sourceOptions} >
             </Select>
           </Form.Item>
           <Form.Item
@@ -154,12 +154,7 @@ const NodeOperations: React.FC<NodeOperationsProps> = ({ graphData, onAddNode, o
             label="目标节点"
             rules={[{ required: true, message: '请选择目标节点' }]}
           >
-            <Select placeholder="选择目标节点">
-              {graphData.nodes.map(node => (
-                <Option key={node.id} value={node.id}>
-                  {node.label || node.id}
-                </Option>
-              ))}
+            <Select placeholder="选择目标节点" options={sourceOptions} >
             </Select>
           </Form.Item>
           <Form.Item
@@ -174,4 +169,4 @@ const NodeOperations: React.FC<NodeOperationsProps> = ({ graphData, onAddNode, o
   );
 };
 
-export default NodeOperations;
+export default React.memo(NodeOperations);
