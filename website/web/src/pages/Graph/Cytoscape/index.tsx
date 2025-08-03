@@ -32,7 +32,7 @@ const GraphPage: React.FC = () => {
   };
 
   // 添加新节点
-  const handleAddNode = useCallback((node: GraphNode) => {
+  const onAddNode = useCallback((node: GraphNode) => {
     setGraphData(prev => ({
       nodes: [...prev.nodes, node],
       edges: [...prev.edges]
@@ -40,7 +40,7 @@ const GraphPage: React.FC = () => {
   }, []);
 
   // 添加新边
-  const handleAddEdge = useCallback((source: string, target: string, weight: number = 1) => {
+  const onAddEdge = useCallback((source: string, target: string, weight: number = 1) => {
     setGraphData(prev => ({
       nodes: [...prev.nodes],
       edges: [...prev.edges, { source, target, weight }]
@@ -84,12 +84,12 @@ const GraphPage: React.FC = () => {
   }, []);
 
   // 切换数据集
-  const handleDatasetChange = useCallback((value: string) => {
+  const onDatasetChange = useCallback((value: string) => {
     setGraphData(value === 'sample' ? sampleData : langGraphData);
   }, []);
 
   // 切换布局算法
-  const handleLayoutChange = useCallback((value: string) => {
+  const onLayoutChange = useCallback((value: string) => {
     setLayoutName(value);
     setLayoutChangeCounter(prev => prev + 1); // 触发布局重新应用
 
@@ -141,15 +141,15 @@ const GraphPage: React.FC = () => {
                 selectedData={graphData === sampleData ? 'sample' : 'langgraph'}
                 layoutName={layoutName}
                 useEnhanced={useEnhanced}
-                onDatasetChange={handleDatasetChange}
-                onLayoutChange={handleLayoutChange}
+                onDatasetChange={onDatasetChange}
+                onLayoutChange={onLayoutChange}
                 onVersionChange={setUseEnhanced}
               />
 
               <NodeOperations
                 graphData={graphData}
-                onAddNode={handleAddNode}
-                onAddEdge={handleAddEdge}
+                onAddNode={onAddNode}
+                onAddEdge={onAddEdge}
               />
             </div>
           </Panel>
@@ -158,7 +158,14 @@ const GraphPage: React.FC = () => {
         <Card
           title="图可视化"
           className={`${styles.card} ${styles.graphCard}`}
-          bodyStyle={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '12px' }}
+          styles={{
+            body: {
+              flex: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              padding: '12px'
+            }
+          }}
         >
           <div className={styles.graphContainer}>
             {useEnhanced ? (

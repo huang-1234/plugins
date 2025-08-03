@@ -11,14 +11,8 @@ interface GraphControlsProps {
   onVersionChange: (value: boolean) => void;
 }
 
-const GraphControls: React.FC<GraphControlsProps> = ({
-  selectedData,
-  layoutName,
-  useEnhanced,
-  onDatasetChange,
-  onLayoutChange,
-  onVersionChange
-}) => {
+const GraphControls: React.FC<GraphControlsProps> = (props) => {
+  const { selectedData, layoutName, useEnhanced, onDatasetChange, onLayoutChange, onVersionChange } = props || {};
   return (
     <Space direction="vertical">
       <div className={styles.controlItem}>
@@ -26,9 +20,11 @@ const GraphControls: React.FC<GraphControlsProps> = ({
         <Radio.Group
           value={selectedData}
           onChange={(e) => onDatasetChange(e.target.value)}
+          options={[
+            { label: '简单流程图', value: 'sample' },
+            { label: 'LangGraph示例', value: 'langgraph' }
+          ]}
         >
-          <Radio.Button value="sample">简单流程图</Radio.Button>
-          <Radio.Button value="langgraph">LangGraph示例</Radio.Button>
         </Radio.Group>
       </div>
 
@@ -37,11 +33,13 @@ const GraphControls: React.FC<GraphControlsProps> = ({
         <Radio.Group
           value={layoutName}
           onChange={(e) => onLayoutChange(e.target.value)}
+          options={[
+            { label: '力导向布局', value: 'cose' },
+            { label: '圆形布局', value: 'circle' },
+            { label: '网格布局', value: 'grid' },
+            { label: '树形布局', value: 'breadthfirst' }
+          ]}
         >
-          <Radio.Button value="cose">力导向布局</Radio.Button>
-          <Radio.Button value="circle">圆形布局</Radio.Button>
-          <Radio.Button value="grid">网格布局</Radio.Button>
-          <Radio.Button value="breadthfirst">树形布局</Radio.Button>
         </Radio.Group>
       </div>
 
@@ -50,13 +48,15 @@ const GraphControls: React.FC<GraphControlsProps> = ({
         <Radio.Group
           value={useEnhanced}
           onChange={(e) => onVersionChange(e.target.value)}
+          options={[
+            { label: '基础版', value: false },
+            { label: '增强版(支持右键菜单)', value: true }
+          ]}
         >
-          <Radio.Button value={false}>基础版</Radio.Button>
-          <Radio.Button value={true}>增强版(支持右键菜单)</Radio.Button>
         </Radio.Group>
       </div>
     </Space>
   );
 };
 
-export default GraphControls;
+export default React.memo(GraphControls);

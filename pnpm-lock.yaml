@@ -485,6 +485,9 @@ importers:
       files-buffer:
         specifier: workspace:*
         version: link:../../libs/files-buffer
+      immer:
+        specifier: ^10.1.1
+        version: 10.1.1
       lite-store-react:
         specifier: 0.1.2-alpha.0
         version: 0.1.2-alpha.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
@@ -4695,6 +4698,9 @@ packages:
     resolution: {integrity: sha512-6TDAlDPZxUFCv+fuOkIoXT/V/f3Qbq8e37p+YOiYrUv3v9cc3/6x78VdfPgFVaB9dZYeLUfKgHRebpkm/oP2VQ==}
     engines: {node: '>=0.10.0'}
     hasBin: true
+
+  immer@10.1.1:
+    resolution: {integrity: sha512-s2MPrmjovJcoMaHtx6K11Ra7oD05NT97w1IC5zpMkT6Atjr7H8LjaDd81iIxUYpMKSRRNMJE703M1Fhr/TctHw==}
 
   immer@9.0.6:
     resolution: {integrity: sha512-G95ivKpy+EvVAnAab4fVa4YGYn24J1SpEktnJX7JJ45Bd7xqME/SCplFzYFmTbrkwZbQ4xJK1xMTUYBkN6pWsQ==}
@@ -12142,6 +12148,8 @@ snapshots:
 
   image-size@0.5.5:
     optional: true
+
+  immer@10.1.1: {}
 
   immer@9.0.6: {}
 
