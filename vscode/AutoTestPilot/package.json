@@ -1,0 +1,59 @@
+{
+  "name": "autotest-pilot",
+  "version": "1.0.0",
+  "description": "VSCode插件，支持选择代码块自动生成测试",
+  "main": "dist/extension.js",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "scripts": {
+    "dev": "vite build --watch",
+    "build": "vite build",
+    "package": "vite build && vsce package"
+  },
+  "activationEvents": [
+    "onCommand:autotest.generateTests",
+    "onCommand:autotest.fixFailedTests"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "autotest.generateTests",
+        "title": "生成测试代码",
+        "category": "AutoTest Pilot"
+      },
+      {
+        "command": "autotest.fixFailedTests",
+        "title": "修复失败的测试",
+        "category": "AutoTest Pilot"
+      }
+    ],
+    "keybindings": [
+      {
+        "key": "ctrl+alt+t",
+        "command": "autotest.generateTests",
+        "when": "editorTextFocus"
+      },
+      {
+        "key": "ctrl+alt+f",
+        "command": "autotest.fixFailedTests",
+        "when": "editorTextFocus"
+      }
+    ]
+  },
+  "keywords": ["test", "automation", "ai", "vscode"],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.13.1",
+  "devDependencies": {
+    "@types/vscode": "1.102.0",
+    "typescript": "5.8.3",
+    "vite": "5.4.19",
+    "@tomjs/vite-plugin-vscode": "2.6.0",
+    "vsce": "2.15.0"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "0.57.0",
+    "node-fetch": "3.0.0"
+  }
+}
