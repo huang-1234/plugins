@@ -3,11 +3,12 @@ import { Card, Space, Typography, Collapse } from 'antd';
 import GraphCytoscape from '@/components/Graph/GraphCytoscape';
 import EnhancedGraphCytoscape from '@/components/Graph/EnhancedGraphCytoscape';
 import NodeOperations from '@/components/Graph/NodeOperations';
-import { GraphData, GraphNode, GraphEdge } from '@/model/graph/tool';
+import { GraphData, GraphNode, GraphEdge, createLayoutConfig } from '@/model/graph/tool';
 import styles from './index.module.less';
 import { langGraphData, sampleData } from '@/model/graph/data';
 import GraphLegend from './GraphLegend';
 import GraphControls from './GraphControls';
+import { useCytoscapePerformance } from '@/hooks/usePerformance';
 
 const { Title, Paragraph } = Typography;
 const { Panel } = Collapse;
@@ -19,6 +20,9 @@ const GraphPage: React.FC = () => {
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const [layoutChangeCounter, setLayoutChangeCounter] = useState<number>(0);
   const cyInstanceRef = useRef<any>(null);
+
+  console.log('WorkFlow: Cytoscape: graphData', graphData);
+  // useCytoscapePerformance(cyInstanceRef.current);
 
   // 处理节点点击事件
   const handleNodeClick = (node: GraphNode) => {
@@ -86,6 +90,8 @@ const GraphPage: React.FC = () => {
   // 切换数据集
   const onDatasetChange = useCallback((value: string) => {
     setGraphData(value === 'sample' ? sampleData : langGraphData);
+    // 数据集变更时重置布局计数器，强制重新布局
+    setLayoutChangeCounter(prev => prev + 1);
   }, []);
 
   // 切换布局算法
@@ -99,20 +105,13 @@ const GraphPage: React.FC = () => {
       // 解锁所有节点以便重新布局
       cy.nodes().unlock();
 
-      // 应用新布局
-      const layout = cy.layout({
-        name: value,
-        animate: true,
-        animationDuration: 500,
-        fit: true,
-        padding: 30
-      });
-      layout.run();
+      // 获取完整的布局配置
+      const layoutConfig = createLayoutConfig(value);
+      console.log('应用布局配置:', layoutConfig);
 
-      // 布局完成后重新锁定节点
-      layout.one('layoutstop', () => {
-        cy.nodes().lock();
-      });
+      // 应用新布局
+      const layout = cy.layout(layoutConfig);
+      layout.run();
     }
   }, []);
 
@@ -125,7 +124,7 @@ const GraphPage: React.FC = () => {
     <div className={styles.graphPageContainer}>
       <div className={styles.titleSection}>
         <Title level={2}>Cytoscape.js + React 图可视化演示</Title>
-        <Paragraph>
+        <Paragraph style={{ marginBottom: 0 }}>
           基于Cytoscape.js和React 18构建的高性能图数据可视化组件，支持邻接表数据结构和LangGraph框架集成。
         </Paragraph>
       </div>
@@ -135,6 +134,9 @@ const GraphPage: React.FC = () => {
           defaultActiveKey={['controls']}
           className={styles.configCollapse}
         >
+          <Panel header="节点状态说明" key="legend">
+            <GraphLegend />
+          </Panel>
           <Panel header="配置选项" key="controls" className={styles.configPanel}>
             <div className={styles.cardContent}>
               <GraphControls
@@ -195,15 +197,6 @@ const GraphPage: React.FC = () => {
             )}
           </div>
         </Card>
-
-        <Collapse
-          defaultActiveKey={['legend']}
-          className={styles.legendCollapse}
-        >
-          <Panel header="节点状态说明" key="legend">
-            <GraphLegend />
-          </Panel>
-        </Collapse>
       </div>
     </div>
   );

@@ -1,0 +1,9 @@
+.rejectedEdge {
+  stroke: #ff4d4f;
+  stroke-dasharray: 5 5;
+}
+.edgeText {
+  font-size: 12px;
+  pointer-events: none;
+  user-select: none;
+}

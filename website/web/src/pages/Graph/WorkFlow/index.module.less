@@ -1,0 +1,117 @@
+.pageContainer {
+  width: 100%;
+  height: 100%;
+  min-height: 600px;
+  display: flex;
+  flex-direction: column;
+}
+
+.workflowContainer {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  min-height: 600px;
+  border: 1px solid #eee;
+  border-radius: 4px;
+  overflow: hidden;
+  flex: 1;
+}
+
+.workflowSidebar {
+  width: 240px;
+  border-right: 1px solid #eee;
+  padding: 16px;
+  background-color: #fafafa;
+  overflow-y: auto;
+  height: 100%;
+  z-index: 5;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.05);
+}
+
+.nodeItemContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.workflowContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative;
+}
+
+.workflowToolbar {
+  height: 48px;
+  border-bottom: 1px solid #eee;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background-color: #fff;
+  z-index: 4;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+.reactFlowWrapper {
+  flex: 1;
+  height: calc(100% - 48px);
+  position: relative;
+  width: 100%;
+}
+
+.reactFlow {
+  width: 100%;
+  height: 100%;
+  background-color: #f5f5f5;
+}
+
+.nodeItem {
+  padding: 8px 12px;
+  margin-bottom: 8px;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  background-color: white;
+  cursor: move;
+  transition: all 0.2s;
+  user-select: none; /* 防止文本被选中影响拖拽 */
+
+  &:hover {
+    border-color: #1890ff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.09);
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.rejectedEdge {
+  stroke: #ff4d4f;
+  stroke-dasharray: 5 5; // 虚线样式
+}
+
+/* 优化节点样式，提高性能 */
+:global {
+  .react-flow__node {
+    transition: none; /* 移除过渡效果，减少拖拽时的卡顿 */
+    will-change: transform; /* 优化变换性能 */
+  }
+
+  .react-flow__handle {
+    width: 8px;
+    height: 8px;
+  }
+
+  .react-flow__edge {
+    pointer-events: stroke; /* 只在边线上响应事件，提高性能 */
+  }
+
+  /* 拖拽时的样式 */
+  .react-flow__node-dragging {
+    z-index: 10;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  }
+}

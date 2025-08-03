@@ -1,11 +1,15 @@
 
 import loadable, { Loadable } from 'loadable-components'
 import { FileTextOutlined, UploadOutlined, MessageOutlined, HomeOutlined, BorderOuterOutlined } from '@ant-design/icons';
-const HomePage = loadable(() => import('../pages/HomePage'));
-const PageCytoscape = loadable(() => import('../pages/Graph/Cytoscape'));
-const ChatPage = loadable(() => import('../pages/ChatPage'));
-const UploadPage = loadable(() => import('../pages/UploadPage'));
-const DocsPage = loadable(() => import('../pages/DocsPage'));
+const HomePage = loadable(/* webpackChunkName: "HomePage" */ () => import('../pages/HomePage'));
+const ChatPage = loadable(/* webpackChunkName: "ChatPage" */ () => import('../pages/ChatPage'));
+const UploadPage = loadable(/* webpackChunkName: "UploadPage" */ () => import('../pages/UploadPage'));
+const DocsPage = loadable(/* webpackChunkName: "DocsPage" */ () => import('../pages/DocsPage'));
+// 图表
+const PageCytoscape = loadable(/* webpackChunkName: "PageCytoscape" */ () => import('../pages/Graph/Cytoscape/index'));
+const PageWorkflow = loadable(/* webpackChunkName: "PageWorkflow" */ () => import('../pages/Graph/WorkFlow'));
+// 知识图谱
+// const PageKnowledgeGraph = loadable(() => import('../pages/Graph/KnowledgeGraph'));
 
 
 export interface IMenu {
@@ -50,7 +54,13 @@ export const menuItems: IMenu[] = [
         label: 'Cytoscape',
         icon: <BorderOuterOutlined />,
         component: PageCytoscape
+      },
+      {
+        key: '/workflow',
+        label: '工作流',
+        icon: <BorderOuterOutlined />,
+        component: PageWorkflow
       }
     ],
-  }
+  },
 ];

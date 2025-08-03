@@ -65,7 +65,7 @@ export const convertAdjListToCytoscape = (data: GraphData): cytoscape.ElementDef
 /**
  * 创建基础样式配置
  */
-export const createBaseStyles = (): cytoscape.Stylesheet[] => {
+export const createBaseStyles = (): any[] => {
   return [
     // 节点样式
     {
@@ -119,10 +119,91 @@ export const createBaseStyles = (): cytoscape.Stylesheet[] => {
 };
 
 /**
+ * 执行拓扑排序算法
+ */
+export const topologicalSort = (nodes: GraphNode[], edges: GraphEdge[]): GraphNode[] => {
+  // 构建邻接表
+  const graph: Map<string, string[]> = new Map();
+  const inDegree: Map<string, number> = new Map();
+
+  // 初始化图和入度
+  nodes.forEach(node => {
+    graph.set(node.id, []);
+    inDegree.set(node.id, 0);
+  });
+
+  // 构建邻接表和计算入度
+  edges.forEach(edge => {
+    const { source, target } = edge;
+    if (graph.has(source)) {
+      graph.get(source)!.push(target);
+    }
+    if (inDegree.has(target)) {
+      inDegree.set(target, inDegree.get(target)! + 1);
+    }
+  });
+
+  // 拓扑排序
+  const queue: string[] = [];
+  const result: string[] = [];
+
+  // 将所有入度为0的节点加入队列
+  nodes.forEach(node => {
+    if (inDegree.get(node.id) === 0) {
+      queue.push(node.id);
+    }
+  });
+
+  // BFS遍历
+  while (queue.length > 0) {
+    const current = queue.shift()!;
+    result.push(current);
+
+    // 更新相邻节点的入度
+    if (graph.has(current)) {
+      const neighbors = graph.get(current)!;
+      for (const neighbor of neighbors) {
+        inDegree.set(neighbor, inDegree.get(neighbor)! - 1);
+        if (inDegree.get(neighbor) === 0) {
+          queue.push(neighbor);
+        }
+      }
+    }
+  }
+
+  // 如果存在环，处理剩余节点
+  if (result.length < nodes.length) {
+    nodes.forEach(node => {
+      if (!result.includes(node.id)) {
+        result.push(node.id);
+      }
+    });
+  }
+
+  // 根据排序结果重新排序节点
+  const nodeMap = new Map<string, GraphNode>();
+  nodes.forEach(node => nodeMap.set(node.id, node));
+
+  return result.map(id => nodeMap.get(id)!);
+};
+
+/**
  * 创建布局配置
  */
 export const createLayoutConfig = (name: string = 'cose'): cytoscape.LayoutOptions => {
   const layouts: Record<string, cytoscape.LayoutOptions> = {
+    // 拓扑排序布局 - 适合有向无环图
+    'topological': {
+      name: 'breadthfirst',
+      fit: true,
+      padding: 30,
+      directed: true,
+      spacingFactor: 1.2,
+      avoidOverlap: true,
+      rankDir: 'LR', // 从左到右排列
+      rankSep: 100, // 层级间距
+      nodeDimensionsIncludeLabels: true
+    } as any,
     // 力导向布局 - 适合大多数图
     'cose': {
       name: 'cose',
@@ -133,14 +214,14 @@ export const createLayoutConfig = (name: string = 'cose'): cytoscape.LayoutOptio
       padding: 30,
       randomize: false,
       componentSpacing: 100,
-      nodeRepulsion: 400000,
-      edgeElasticity: 100,
+      nodeRepulsion: 200000, // 降低了节点排斥力，减少抖动
+      edgeElasticity: 50,    // 降低了边弹性，减少抖动
       nestingFactor: 5,
-      gravity: 80,
-      numIter: 1000,
-      initialTemp: 200,
-      coolingFactor: 0.95,
-      minTemp: 1.0
+      gravity: 50,           // 降低了重力，减少抖动
+      numIter: 1500,         // 增加迭代次数，使布局更稳定
+      initialTemp: 150,      // 降低初始温度，减少抖动
+      coolingFactor: 0.97,   // 提高冷却因子，使布局更平滑
+      minTemp: 0.5           // 降低最小温度，使布局更稳定
     },
     // 圆形布局 - 适合环状结构
     'circle': {
@@ -159,8 +240,7 @@ export const createLayoutConfig = (name: string = 'cose'): cytoscape.LayoutOptio
       fit: true,
       padding: 30,
       avoidOverlap: true,
-      rows: undefined,
-      columns: undefined
+      rows: undefined
     },
     // 树形布局 - 适合层次结构
     'breadthfirst': {

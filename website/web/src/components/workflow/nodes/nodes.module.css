@@ -1,0 +1,57 @@
+.businessNode {
+  padding: 10px;
+  border-radius: 6px;
+  background: white;
+  border: 1px solid #ddd;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 180px;
+}
+.businessNode.selected {
+  box-shadow: 0 0 0 2px #1890ff;
+}
+.businessNode.start {
+  background: #e6f7ff;
+  border-color: #91d5ff;
+}
+.businessNode.end {
+  background: #f6ffed;
+  border-color: #b7eb8f;
+}
+.businessNode.dataProcess {
+  background: #fff7e6;
+  border-color: #ffd591;
+}
+.businessNode .nodeContent {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.businessNode .label {
+  font-weight: 500;
+  font-size: 14px;
+}
+.businessNode .status {
+  font-size: 12px;
+  color: #888;
+}
+.approvalNode {
+  padding: 10px;
+  border-radius: 6px;
+  background: white;
+  border: 1px solid #ddd;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 200px;
+}
+.approvalNode.selected {
+  box-shadow: 0 0 0 2px #1890ff;
+}
+.approvalNode .nodeContent {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.approvalNode .assignee {
+  font-size: 12px;
+  color: #666;
+  margin-top: 4px;
+}
