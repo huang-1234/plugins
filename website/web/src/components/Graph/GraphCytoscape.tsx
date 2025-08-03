@@ -40,7 +40,7 @@ const GraphCytoscape: React.FC<GraphCytoscapeProps> = ({
   preservePositions = true
 }) => {
   const cyRef = useRef<cytoscape.Core | null>(null);
-  const [elements, setElements] = useState<any[]>([]);
+  const [elements, setElements] = useState<cytoscape.ElementDefinition[]>([]);
   const [isFirstRender, setIsFirstRender] = useState(true);
   const nodePositionsRef = useRef(new Map());
   const prevLayoutNameRef = useRef(layoutName);
@@ -55,6 +55,7 @@ const GraphCytoscape: React.FC<GraphCytoscapeProps> = ({
       nodes: processNodeData(data.nodes),
       edges: data.edges
     };
+    console.log('processedData', processedData);
 
     // 转换为Cytoscape元素格式
     const cytoscapeElements = convertAdjListToCytoscape(processedData);
@@ -94,7 +95,7 @@ const GraphCytoscape: React.FC<GraphCytoscapeProps> = ({
   }, [layoutName]);
 
   // 防止节点重叠
-  const preventNodeOverlap = (cy: any, targetNode?: any) => {
+  const preventNodeOverlap = (cy: cytoscape.Core, targetNode?: cytoscape.NodeSingular) => {
     const nodes = cy.nodes();
     const nodeRadius = 20; // 节点半径
     const minDistance = nodeRadius * 2.5; // 最小距离
@@ -104,7 +105,7 @@ const GraphCytoscape: React.FC<GraphCytoscapeProps> = ({
       const otherNodes = nodes.not(targetNode);
       const posA = targetNode.position();
 
-      otherNodes.forEach((nodeB: any) => {
+      otherNodes.forEach((nodeB: cytoscape.NodeSingular) => {
         const posB = nodeB.position();
 
         // 计算两节点间距离
@@ -173,7 +174,7 @@ const GraphCytoscape: React.FC<GraphCytoscapeProps> = ({
   };
 
   // 确保节点在视图范围内
-  const ensureNodesInViewport = (cy: any, targetNode?: any) => {
+  const ensureNodesInViewport = (cy: cytoscape.Core, targetNode?: cytoscape.NodeSingular) => {
     const padding = 50;
     const extent = cy.extent();
     const viewportMinX = extent.x1 + padding;
@@ -201,7 +202,7 @@ const GraphCytoscape: React.FC<GraphCytoscapeProps> = ({
       cy.fit(cy.elements(), padding);
 
       // 更新所有节点位置
-      cy.nodes().forEach((node: any) => {
+      cy.nodes().forEach((node: cytoscape.NodeSingular) => {
         const pos = node.position();
         nodePositionsRef.current.set(node.id(), { x: pos.x, y: pos.y });
       });
@@ -256,7 +257,7 @@ const GraphCytoscape: React.FC<GraphCytoscapeProps> = ({
   };
 
   // 当组件获取到Cytoscape实例时
-  const getCyRef = (cy: any) => {
+  const getCyRef = (cy: cytoscape.Core) => {
     cyRef.current = cy;
     registerEventHandlers(cy);
 
@@ -268,7 +269,7 @@ const GraphCytoscape: React.FC<GraphCytoscapeProps> = ({
 
       // 布局完成后保存节点位置，但不锁定节点
       layout.one('layoutstop', () => {
-        cy.nodes().forEach((node: any) => {
+        cy.nodes().forEach((node: cytoscape.NodeSingular) => {
           nodePositionsRef.current.set(node.id(), {
             x: node.position('x'),
             y: node.position('y')
@@ -277,7 +278,7 @@ const GraphCytoscape: React.FC<GraphCytoscapeProps> = ({
       });
     } else if (preservePositions) {
       // 恢复已有节点的位置
-      cy.nodes().forEach((node: any) => {
+      cy.nodes().forEach((node: cytoscape.NodeSingular) => {
         const savedPosition = nodePositionsRef.current.get(node.id());
         if (savedPosition) {
           node.position(savedPosition);
@@ -337,7 +338,7 @@ const GraphCytoscape: React.FC<GraphCytoscapeProps> = ({
           key={`graph-${elements.length}-${layoutName}`}
           elements={elements as any}
           className={styles.graphContent}
-          cy={(cy) => getCyRef(cy)}
+          cy={getCyRef}
           stylesheet={createBaseStyles() as any}
           userZoomingEnabled={true}
           userPanningEnabled={true}

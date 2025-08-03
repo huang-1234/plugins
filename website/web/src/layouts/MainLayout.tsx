@@ -1,16 +1,17 @@
 import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
-import { Layout, Menu, Input } from 'antd';
+import { Layout, Image, Input } from 'antd';
 import { SearchOutlined, UserOutlined } from '@ant-design/icons';
 import FeatureMenu from '@/layouts/FeatureMenu';
 import UserPanel from '@/components/UserPanel';
 import HotRecommendations from '@/components/HotRecommendations';
 import SearchBar from '@/components/SearchBar';
-
+import logo from '@/assets/svg/logo-32.svg';
 const { Header, Sider, Content } = Layout;
 
 const MainLayout = () => {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
+  const [collapsedRight, setCollapsedRight] = useState(true);
 
   return (
     <Layout>
@@ -22,15 +23,20 @@ const MainLayout = () => {
         background: '#fff',
         boxShadow: '0 2px 8px rgba(0, 0, 0, 0.06)'
       }}>
-        <div className="logo" style={{ width: 120 }}>
-          项目网站
+        <div className="logo" style={{ width: 120, position: 'relative' }}>
+          <Image preview={false} src={logo} alt="logo" style={{
+            // position: 'absolute',
+            // left: 16,
+            // top: 16,
+            width: 32, height: 32
+          }} />
         </div>
         <SearchBar />
         <UserPanel />
       </Header>
       <Layout>
         <Sider
-          width={280}
+          width={160}
           collapsible
           collapsed={collapsed}
           onCollapse={setCollapsed}
@@ -38,11 +44,15 @@ const MainLayout = () => {
         >
           <FeatureMenu />
         </Sider>
-        <Content style={{ padding: '24px', minHeight: 'calc(100vh - 64px)' }}>
+        <Content style={{  minHeight: 'calc(100vh - 64px)' }}>
           <Outlet />
         </Content>
-        <Sider width={280} style={{ background: '#fff' }}>
-          <HotRecommendations />
+        <Sider
+          width={280} style={{ background: '#fff' }}
+          collapsed={collapsedRight}
+          onCollapse={setCollapsedRight}
+        >
+          <HotRecommendations collapsed={collapsedRight} onCollapse={setCollapsedRight} />
         </Sider>
       </Layout>
     </Layout>

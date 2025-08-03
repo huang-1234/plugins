@@ -1,10 +1,14 @@
 import React from 'react';
-import { List, Card, Typography } from 'antd';
+import { List, Card, Typography, Button } from 'antd';
 import { useNavigate } from 'react-router-dom';
 
 const { Title } = Typography;
-
-const HotRecommendations = () => {
+interface HotRecommendationsProps {
+  collapsed: boolean;
+  onCollapse: (collapsed: boolean) => void;
+}
+const HotRecommendations = (props: HotRecommendationsProps) => {
+  const { collapsed, onCollapse } = props;
   const navigate = useNavigate();
 
   const recommendedDocs = [
@@ -31,23 +35,29 @@ const HotRecommendations = () => {
   ];
 
   return (
-    <Card title="推荐阅读" style={{ margin: '16px' }}>
-      <List
-        itemLayout="horizontal"
-        dataSource={recommendedDocs}
-        renderItem={item => (
-          <List.Item
-            style={{ cursor: 'pointer' }}
-            onClick={() => navigate(`/docs/${item.id}`)}
-          >
-            <List.Item.Meta
-              title={item.title}
-              description={item.description}
-            />
-          </List.Item>
-        )}
-      />
-    </Card>
+    <>
+      <Button type="link" onClick={() => onCollapse(!collapsed)} style={{ margin: '16px' }}>
+        {collapsed ? '展开' : '收起'}
+      </Button>
+      {collapsed ? null : <Card title="推荐阅读" style={{ margin: '16px', width: collapsed ? '100%' : '280px' }}>
+
+        <List
+          itemLayout="horizontal"
+          dataSource={recommendedDocs}
+          renderItem={item => (
+            <List.Item
+              style={{ cursor: 'pointer' }}
+              onClick={() => navigate(`/docs/${item.id}`)}
+            >
+              <List.Item.Meta
+                title={item.title}
+                description={item.description}
+              />
+            </List.Item>
+          )}
+        />
+      </Card>}
+    </>
   );
 };
 

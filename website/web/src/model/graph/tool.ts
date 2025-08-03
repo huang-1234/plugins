@@ -42,7 +42,6 @@ export const convertAdjListToCytoscape = (data: GraphData): cytoscape.ElementDef
   data.nodes.forEach(node => {
     elements.push({
       data: {
-        id: node.id,
         ...node // 保留所有原始属性
       },
       group: 'nodes'
@@ -53,9 +52,7 @@ export const convertAdjListToCytoscape = (data: GraphData): cytoscape.ElementDef
   data.edges.forEach((edge, index) => {
     elements.push({
       data: {
-        id: `e${index}`,
-        source: edge.source,
-        target: edge.target,
+        id: `e_${index}`,
         ...edge // 保留所有原始属性
       },
       group: 'edges'
