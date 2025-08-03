@@ -32,10 +32,11 @@ const router = new Router();
  */
 router.get('/:name', async (ctx) => {
   const { name } = ctx.params;
-  const docPath = path.resolve(__dirname, `../../content/${name}.mdx`);
+  const docPath = path.resolve(__dirname, `../db/docs/${name}.md`);
 
   try {
     // 检查文件是否存在
+    console.log('name', name, docPath)
     if (fs.existsSync(docPath)) {
       ctx.type = 'text/markdown';
       ctx.body = fs.createReadStream(docPath);
@@ -43,7 +44,7 @@ router.get('/:name', async (ctx) => {
       ctx.status = 404;
       ctx.body = {
         success: false,
-        message: `文档 ${name}.mdx 不存在`
+        message: `文档 ${name}.md 不存在`
       };
     }
   } catch (error: any) {
@@ -51,6 +52,43 @@ router.get('/:name', async (ctx) => {
     ctx.body = {
       success: false,
       message: `读取文档失败: ${error.message}`
+    };
+  }
+});
+
+/**
+ * @swagger
+ * /list:
+ *   get:
+ *     summary: 获取文档列表
+ *     description: 获取所有可用的Markdown文档列表
+ *     tags: [文档]
+ *     responses:
+ *       200:
+ *         description: 成功返回文档列表
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: string
+ *       500:
+ *         description: 服务器错误
+ */
+// 读取 db/docs 目录下的所有 md 文件
+router.get('/list', async (ctx) => {
+  const docPath = path.resolve(__dirname, `../db/docs`);
+  try {
+    const files = fs.readdirSync(docPath);
+    ctx.body = {
+      success: true,
+      data: files
+    };
+  } catch (error) {
+    ctx.status = 500;
+    ctx.body = {
+      success: false,
+      message: `读取文档列表失败: ${error}`
     };
   }
 });
@@ -88,21 +126,37 @@ router.get('/:name', async (ctx) => {
  *         description: 服务器错误
  */
 router.get('/', async (ctx) => {
+  // 尝试从两个目录获取文档
   const contentDir = path.resolve(__dirname, '../../content');
+  const docsDir = path.resolve(__dirname, '../db/docs');
 
   try {
-    // 确保目录存在
-    if (!fs.existsSync(contentDir)) {
-      fs.mkdirSync(contentDir, { recursive: true });
+    let files: any[] = [];
+
+    // 尝试读取 content 目录
+    if (fs.existsSync(contentDir)) {
+      const contentFiles = fs.readdirSync(contentDir)
+        .filter(file => file.endsWith('.mdx') || file.endsWith('.md'))
+        .map(file => ({
+          name: path.basename(file, path.extname(file)),
+          path: file,
+          lastModified: fs.statSync(path.join(contentDir, file)).mtime
+        }));
+      files = [...files, ...contentFiles];
     }
 
-    const files = fs.readdirSync(contentDir)
-      .filter(file => file.endsWith('.mdx') || file.endsWith('.md'))
-      .map(file => ({
-        name: path.basename(file, path.extname(file)),
-        path: file,
-        lastModified: fs.statSync(path.join(contentDir, file)).mtime
-      }));
+    // 尝试读取 db/docs 目录
+    if (fs.existsSync(docsDir)) {
+      const docsFiles = fs.readdirSync(docsDir)
+        .filter(file => file.endsWith('.mdx') || file.endsWith('.md'))
+        .map(file => ({
+          name: path.basename(file, path.extname(file)),
+          path: file,
+          lastModified: fs.statSync(path.join(docsDir, file)).mtime
+        }));
+      console.log('docsFiles', docsFiles)
+      files = [...files, ...docsFiles];
+    }
 
     ctx.body = {
       success: true,

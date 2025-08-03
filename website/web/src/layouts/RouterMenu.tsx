@@ -1,9 +1,15 @@
 
 import loadable, { Loadable } from 'loadable-components'
 import { FileTextOutlined, UploadOutlined, MessageOutlined, HomeOutlined, BorderOuterOutlined } from '@ant-design/icons';
-const HomePage = loadable(/* webpackChunkName: "HomePage" */ () => import('../pages/HomePage'));
-const ChatPage = loadable(/* webpackChunkName: "ChatPage" */ () => import('../pages/ChatPage'));
-const UploadPage = loadable(/* webpackChunkName: "UploadPage" */ () => import('../pages/UploadPage'));
+// 首页
+const HomePage = loadable(/* webpackChunkName: "HomePage" */() => import('../pages/HomePage'));
+// 聊天
+const ChatPage = loadable(/* webpackChunkName: "ChatPage" */() => import('../pages/ChatPage'));
+// 文件上传
+const UploadPage = loadable(/* webpackChunkName: "UploadPage" */() => import('../pages/UploadPage'));
+// 文档
+const PageDocsList = loadable(/* webpackChunkName: "PageDocsList" */ () => import('../pages/DocsPage/PageDocsList'));
+const PageDocsDetails = loadable(/* webpackChunkName: "PageDocsDetails" */ () => import('../pages/DocsPage/PageDocsDetails'));
 const DocsPage = loadable(/* webpackChunkName: "DocsPage" */ () => import('../pages/DocsPage'));
 // 图表
 const PageCytoscape = loadable(/* webpackChunkName: "PageCytoscape" */ () => import('../pages/Graph/Cytoscape/index'));
@@ -27,10 +33,24 @@ export const menuItems: IMenu[] = [
     component: HomePage
   },
   {
-    key: '/docs/intro',
+    key: '/docs',
     label: '文档',
     icon: <FileTextOutlined />,
-    component: DocsPage
+    component: DocsPage,
+    children: [
+      {
+        key: '/list',
+        label: '文档列表',
+        icon: <FileTextOutlined />,
+        component: PageDocsList
+      },
+      {
+        key: '/:doc_name',
+        label: '文档详情',
+        icon: <FileTextOutlined />,
+        component: PageDocsDetails
+      }
+    ]
   },
   {
     key: '/upload',
