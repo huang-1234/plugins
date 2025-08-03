@@ -8,6 +8,7 @@ import styles from './index.module.less';
 import { langGraphData, sampleData } from '@/model/graph/data';
 import GraphLegend from './GraphLegend';
 import GraphControls from './GraphControls';
+import { useCytoscapePerformance } from '@/hooks/usePerformance';
 
 const { Title, Paragraph } = Typography;
 const { Panel } = Collapse;
@@ -19,6 +20,9 @@ const GraphPage: React.FC = () => {
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const [layoutChangeCounter, setLayoutChangeCounter] = useState<number>(0);
   const cyInstanceRef = useRef<any>(null);
+
+  console.log('WorkFlow: Cytoscape: graphData', graphData);
+  // useCytoscapePerformance(cyInstanceRef.current);
 
   // 处理节点点击事件
   const handleNodeClick = (node: GraphNode) => {
