@@ -17,6 +17,8 @@ const PageWorkflow = loadable(/* webpackChunkName: "PageWorkflow" */ () => impor
 // 知识图谱
 // const PageKnowledgeGraph = loadable(() => import('../pages/Graph/KnowledgeGraph'));
 
+// 算法
+const UnionFindPage = loadable(/* webpackChunkName: "UnionFindPage" */ () => import('../pages/AlgorithmPage/UnionFind'));
 
 export interface IMenu {
   key: string;
@@ -80,6 +82,22 @@ export const menuItems: IMenu[] = [
         label: '工作流',
         icon: <BorderOuterOutlined />,
         component: PageWorkflow
+      }
+    ],
+  },
+  /**
+   * @desc 算法菜单
+   */
+  {
+    key: '/algorithm',
+    label: '算法',
+    icon: <BorderOuterOutlined />,
+    children: [
+      {
+        key: '/union-find',
+        label: '并查集',
+        icon: <BorderOuterOutlined />,
+        component: UnionFindPage
       }
     ],
   },

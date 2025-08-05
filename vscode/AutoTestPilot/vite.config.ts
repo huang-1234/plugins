@@ -1,5 +1,5 @@
 import { defineConfig } from 'vite';
-import vscode from 'vite-plugin-vscode';
+import vscode from '@tomjs/vite-plugin-vscode';
 import { resolve } from 'path';
 
 export default defineConfig({

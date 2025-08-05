@@ -1,7 +1,7 @@
 import { Routes, Route } from 'react-router-dom';
 import MainLayout from './layouts/MainLayout';
 import HomePage from './pages/HomePage';
-import './App.css';
+// import './App.css';
 import {  menuItems } from './layouts/RouterMenu';
 import React from 'react';
 
