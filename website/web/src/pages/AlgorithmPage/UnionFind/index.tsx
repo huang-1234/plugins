@@ -1,7 +1,7 @@
 import React from 'react';
 import { Typography, Card } from 'antd';
 import styles from './index.module.less';
-import UnionFindVisualizer from '../../../algorithm/union-find/GraphUnionFind';
+import UnionFindVisualizer from '@/algorithm/UnionFind/GraphUnionFind';
 
 const { Title } = Typography;
 
