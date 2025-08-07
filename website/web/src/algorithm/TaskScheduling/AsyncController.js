@@ -129,6 +129,18 @@ async function main() {
     () => new Promise(res => setTimeout(() => res('Task2'), 100)),
     () => new Promise((_, rej) => setTimeout(() => rej('Task3 error'), 200)),
     () => new Promise(res => setTimeout(() => res('Task4'), 150)),
+    () => new Promise(res => setTimeout(() => res('Task5'), 250)),
+    () => new Promise(res => setTimeout(() => res('Task6'), 200)),
+    () => new Promise(res => setTimeout(() => res('Task7'), 300)),
+    () => new Promise(res => setTimeout(() => res('Task8'), 200)),
+    () => new Promise(res => setTimeout(() => res('Task9'), 200)),
+    () => new Promise(res => setTimeout(() => res('Task10'), 200)),
+    () => new Promise(res => setTimeout(() => res('Task11'), 200)),
+    () => new Promise(res => setTimeout(() => res('Task12'), 200)),
+    () => new Promise(res => setTimeout(() => res('Task13'), 200)),
+    () => new Promise(res => setTimeout(() => res('Task14'), 200)),
+    () => new Promise(res => setTimeout(() => res('Task15'), 200)),
+    () => new Promise(res => setTimeout(() => res('Task16'), 200)),
   ];
 
   const controller = new AsyncController(2, 1); // 并发2-4
