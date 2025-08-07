@@ -158,6 +158,7 @@ async function main() {
     console.log(`${i + 1}:`, res.status === 'fulfilled' ? res.value : res.reason)
   );
 }
+main().catch(console.error);
 
 // 导出AsyncController类和辅助函数
 export { AsyncController, delayTime, main };
