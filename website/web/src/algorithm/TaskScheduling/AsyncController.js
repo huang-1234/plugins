@@ -66,6 +66,8 @@ class AsyncController {
       )
     );
 
+    console.log('effectiveConcurrency', effectiveConcurrency, 'inProgress', this.inProgress, 'this.queue.length', this.queue.length)
+
     while (this.inProgress < effectiveConcurrency && this.queue.length) {
       this.inProgress++;
       const operation = this.queue.shift();
@@ -122,25 +124,30 @@ class AsyncController {
   }
 }
 
+const delayTime = {
+  fast: 200,
+  slow: 2000,
+  outTime: 2000,
+}
 // 使用示例
 async function main() {
   const tasks = [
-    () => new Promise(res => setTimeout(() => res('Task1'), 300)),
-    () => new Promise(res => setTimeout(() => res('Task2'), 100)),
-    () => new Promise((_, rej) => setTimeout(() => rej('Task3 error'), 200)),
-    () => new Promise(res => setTimeout(() => res('Task4'), 150)),
-    () => new Promise(res => setTimeout(() => res('Task5'), 250)),
-    () => new Promise(res => setTimeout(() => res('Task6'), 200)),
-    () => new Promise(res => setTimeout(() => res('Task7'), 300)),
-    () => new Promise(res => setTimeout(() => res('Task8'), 200)),
-    () => new Promise(res => setTimeout(() => res('Task9'), 200)),
-    () => new Promise(res => setTimeout(() => res('Task10'), 200)),
-    () => new Promise(res => setTimeout(() => res('Task11'), 200)),
-    () => new Promise(res => setTimeout(() => res('Task12'), 200)),
-    () => new Promise(res => setTimeout(() => res('Task13'), 200)),
-    () => new Promise(res => setTimeout(() => res('Task14'), 200)),
-    () => new Promise(res => setTimeout(() => res('Task15'), 200)),
-    () => new Promise(res => setTimeout(() => res('Task16'), 200)),
+    () => new Promise(res => setTimeout(() => res('Task1'), delayTime.fast)),
+    () => new Promise(res => setTimeout(() => res('Task2'), delayTime.slow)),
+    () => new Promise((_, rej) => setTimeout(() => rej('Task3 error'), delayTime.outTime)),
+    () => new Promise(res => setTimeout(() => res('Task4'), delayTime.slow)),
+    () => new Promise(res => setTimeout(() => res('Task5'), delayTime.slow)),
+    () => new Promise(res => setTimeout(() => res('Task6'), delayTime.fast)),
+    () => new Promise(res => setTimeout(() => res('Task7'), delayTime.slow)),
+    () => new Promise(res => setTimeout(() => res('Task8'), delayTime.fast)),
+    () => new Promise(res => setTimeout(() => res('Task9'), delayTime.fast)),
+    () => new Promise(res => setTimeout(() => res('Task10'), delayTime.fast)),
+    () => new Promise(res => setTimeout(() => res('Task11'), delayTime.fast)),
+    () => new Promise(res => setTimeout(() => res('Task12'), delayTime.slow)),
+    () => new Promise(res => setTimeout(() => res('Task13'), delayTime.slow)),
+    () => new Promise(res => setTimeout(() => res('Task14'), delayTime.slow)),
+    () => new Promise(res => setTimeout(() => res('Task15'), delayTime.fast)),
+    () => new Promise(res => setTimeout(() => res('Task16'), delayTime.fast)),
   ];
 
   const controller = new AsyncController(4, 2); // 并发2-4
