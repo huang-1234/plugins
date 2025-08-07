@@ -159,4 +159,5 @@ async function main() {
   );
 }
 
-main().catch(console.error);
+// 导出AsyncController类和辅助函数
+export { AsyncController, delayTime, main };
