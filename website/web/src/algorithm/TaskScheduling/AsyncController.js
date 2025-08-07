@@ -143,7 +143,7 @@ async function main() {
     () => new Promise(res => setTimeout(() => res('Task16'), 200)),
   ];
 
-  const controller = new AsyncController(2, 1); // 并发2-4
+  const controller = new AsyncController(4, 2); // 并发2-4
   const results = await controller.run(tasks);
 
   console.log('最终结果:');
