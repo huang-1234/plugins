@@ -66,9 +66,10 @@ class AsyncController {
       )
     );
 
+    console.log('effectiveConcurrency', effectiveConcurrency, 'inProgress', this.inProgress, 'this.queue.length', this.queue.length)
+
     while (this.inProgress < effectiveConcurrency && this.queue.length) {
       this.inProgress++;
-      console.log('this.inProgress', this.inProgress);
       const operation = this.queue.shift();
       operation().then(this._handleResult.bind(this));
     }
@@ -123,29 +124,33 @@ class AsyncController {
   }
 }
 
+const delayTime = {
+  fast: 200,
+  slow: 2000,
+  outTime: 2000,
+}
 // 使用示例
 async function main() {
   const tasks = [
-    () => new Promise(res => setTimeout(() => res('Task1'), 300)),
-    () => new Promise(res => setTimeout(() => res('Task2'), 100)),
-    () => new Promise((_, rej) => setTimeout(() => rej('Task3 error'), 200)),
-    () => new Promise(res => setTimeout(() => res('Task4'), 150)),
-    () => new Promise(res => setTimeout(() => res('Task5'), 150)),
-    () => new Promise(res => setTimeout(() => res('Task6'), 150)),
-    () => new Promise(res => setTimeout(() => res('Task7'), 150)),
-    () => new Promise(res => setTimeout(() => res('Task8'), 150)),
-    () => new Promise(res => setTimeout(() => res('Task9'), 150)),
-    () => new Promise(res => setTimeout(() => res('Task10'), 150)),
-    () => new Promise(res => setTimeout(() => res('Task11'), 150)),
-    () => new Promise(res => setTimeout(() => res('Task12'), 150)),
-    () => new Promise(res => setTimeout(() => res('Task13'), 150)),
-    () => new Promise(res => setTimeout(() => res('Task14'), 150)),
-    () => new Promise(res => setTimeout(() => res('Task15'), 150)),
-    () => new Promise(res => setTimeout(() => res('Task16'), 150)),
-    () => new Promise(res => setTimeout(() => res('Task17'), 150)),
+    () => new Promise(res => setTimeout(() => res('Task1'), delayTime.fast)),
+    () => new Promise(res => setTimeout(() => res('Task2'), delayTime.slow)),
+    () => new Promise((_, rej) => setTimeout(() => rej('Task3 error'), delayTime.outTime)),
+    () => new Promise(res => setTimeout(() => res('Task4'), delayTime.slow)),
+    () => new Promise(res => setTimeout(() => res('Task5'), delayTime.slow)),
+    () => new Promise(res => setTimeout(() => res('Task6'), delayTime.fast)),
+    () => new Promise(res => setTimeout(() => res('Task7'), delayTime.slow)),
+    () => new Promise(res => setTimeout(() => res('Task8'), delayTime.fast)),
+    () => new Promise(res => setTimeout(() => res('Task9'), delayTime.fast)),
+    () => new Promise(res => setTimeout(() => res('Task10'), delayTime.fast)),
+    () => new Promise(res => setTimeout(() => res('Task11'), delayTime.fast)),
+    () => new Promise(res => setTimeout(() => res('Task12'), delayTime.slow)),
+    () => new Promise(res => setTimeout(() => res('Task13'), delayTime.slow)),
+    () => new Promise(res => setTimeout(() => res('Task14'), delayTime.slow)),
+    () => new Promise(res => setTimeout(() => res('Task15'), delayTime.fast)),
+    () => new Promise(res => setTimeout(() => res('Task16'), delayTime.fast)),
   ];
 
-  const controller = new AsyncController(2, 1); // 并发2-4
+  const controller = new AsyncController(4, 2); // 并发2-4
   const results = await controller.run(tasks);
 
   console.log('最终结果:');
@@ -153,5 +158,7 @@ async function main() {
     console.log(`${i + 1}:`, res.status === 'fulfilled' ? res.value : res.reason)
   );
 }
-
 main().catch(console.error);
+
+// 导出AsyncController类和辅助函数
+export { AsyncController, delayTime, main };

@@ -35,6 +35,7 @@ website/web/
   - 偏数据分析使用 @antv/g2plot、@antv/g2
 - **状态管理**: React Hooks、zustand
 - **数据流**: 大对象处理使用immer优化
+- **测试**: vitest@3.2.4
 
 ## 核心模块
 
