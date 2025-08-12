@@ -3,12 +3,16 @@
   "version": "1.0.0",
   "description": "网站后端服务",
   "main": "dist/index.js",
+  "type": "NodeNext",
   "scripts": {
-    "dev": "nodemon --exec ts-node src/index.ts",
+    "dev": "node start-dev.js",
+    "dev:watch": "nodemon --exec ts-node src/index.ts",
     "build": "rimraf dist && tsc",
     "start": "node dist/index.js"
   },
   "dependencies": {
+    "react": "19.1.1",
+    "react-dom": "19.1.1",
     "@langchain/anthropic": "^0.3.25",
     "@langchain/community": "^0.3.49",
     "@langchain/core": "^0.1.63",
@@ -30,6 +34,8 @@
     "zod": "^4.0.14"
   },
   "devDependencies": {
+    "@types/react": "19.1.1",
+    "@types/react-dom": "19.1.1",
     "@types/koa": "2.15.0",
     "@types/koa-bodyparser": "4.3.10",
     "@types/koa-cors": "0.0.4",

@@ -7,11 +7,12 @@ import dotenv from 'dotenv';
 import fs from 'fs';
 import path from 'path';
 import serve from 'koa-static';
-import { fileRoutes } from './routes/file';
-import { aiRoutes } from './routes/ai';
-import { sseRoutes } from './routes/sse';
-import { docRoutes } from './routes/doc';
-import { setupSwagger } from './swagger';
+import { fileRoutes } from './routes/file.js';
+import { aiRoutes } from './routes/ai.js';
+import { sseRoutes } from './routes/sse.js';
+import { docRoutes } from './routes/doc.js';
+import ssrRoutes from './routes/ssr.js';
+import { setupSwagger } from './swagger/index.js';
 
 // 加载环境变量
 dotenv.config();
@@ -45,6 +46,7 @@ router.use('/api/upload', fileRoutes.routes());
 router.use('/api/ai', aiRoutes.routes());
 router.use('/api/docs', docRoutes.routes());
 router.use(sseRoutes.routes());
+router.use(ssrRoutes.routes());
 
 // 错误处理中间件
 app.use(async (ctx, next) => {

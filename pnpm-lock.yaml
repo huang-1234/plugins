@@ -408,6 +408,37 @@ importers:
         specifier: 3.2.4
         version: 3.2.4(@types/debug@4.1.12)(@types/node@20.19.9)(jsdom@26.1.0)(less@4.4.0)(sass-embedded@1.89.2)(terser@5.43.1)
 
+  libs/render-core:
+    dependencies:
+      immer:
+        specifier: 10.1.1
+        version: 10.1.1
+      react:
+        specifier: 19.1.1
+        version: 19.1.1
+      react-dom:
+        specifier: 19.1.1
+        version: 19.1.1(react@19.1.1)
+    devDependencies:
+      '@types/node':
+        specifier: 20.19.9
+        version: 20.19.9
+      '@types/react':
+        specifier: 18.2.25
+        version: 18.2.25
+      '@types/react-dom':
+        specifier: 18.2.25
+        version: 18.2.25
+      typescript:
+        specifier: 5.8.3
+        version: 5.8.3
+      vite:
+        specifier: 5.4.19
+        version: 5.4.19(@types/node@20.19.9)(less@4.4.0)(sass-embedded@1.89.2)(terser@5.43.1)
+      vitest:
+        specifier: 3.2.4
+        version: 3.2.4(@types/debug@4.1.12)(@types/node@20.19.9)(jsdom@26.1.0)(less@4.4.0)(sass-embedded@1.89.2)(terser@5.43.1)
+
   vscode/AutoTestPilot:
     dependencies:
       '@anthropic-ai/sdk':
@@ -446,7 +477,7 @@ importers:
         version: 0.1.63(openai@5.11.0(ws@8.14.2)(zod@4.0.14))
       '@langchain/langgraph':
         specifier: ^0.4.2
-        version: 0.4.2(@langchain/core@0.1.63(openai@5.11.0(ws@8.14.2)(zod@4.0.14)))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(zod-to-json-schema@3.24.6(zod@4.0.14))
+        version: 0.4.2(@langchain/core@0.1.63(openai@5.11.0(ws@8.14.2)(zod@4.0.14)))(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(zod-to-json-schema@3.24.6(zod@4.0.14))
       '@langchain/openai':
         specifier: ^0.6.3
         version: 0.6.3(@langchain/core@0.1.63(openai@5.11.0(ws@8.14.2)(zod@4.0.14)))(ws@8.14.2)
@@ -483,6 +514,12 @@ importers:
       openai:
         specifier: ^5.11.0
         version: 5.11.0(ws@8.14.2)(zod@4.0.14)
+      react:
+        specifier: 19.1.1
+        version: 19.1.1
+      react-dom:
+        specifier: 19.1.1
+        version: 19.1.1(react@19.1.1)
       swagger-jsdoc:
         specifier: ^6.2.8
         version: 6.2.8(openapi-types@12.1.3)
@@ -514,6 +551,12 @@ importers:
       '@types/node':
         specifier: 20.19.9
         version: 20.19.9
+      '@types/react':
+        specifier: 18.2.25
+        version: 18.2.25
+      '@types/react-dom':
+        specifier: 18.2.25
+        version: 18.2.25
       '@types/swagger-jsdoc':
         specifier: ^6.0.4
         version: 6.0.4
@@ -7182,6 +7225,11 @@ packages:
     peerDependencies:
       react: ^18.3.1
 
+  react-dom@19.1.1:
+    resolution: {integrity: sha512-Dlq/5LAZgF0Gaz6yiqZCf6VCcZs1ghAJyrsu84Q/GT0gV+mCxbfmKNoGRKBYMJ8IEdGPqu49YWXD02GCknEDkw==}
+    peerDependencies:
+      react: ^19.1.1
+
   react-fast-compare@3.2.2:
     resolution: {integrity: sha512-nsO+KSNgo1SbJqJEYRE9ERzo7YtYbou/OqjSQKxV7jcKox7+usiUVZOAC+XnDOABXggQTno0Y1CpVnuWEc1boQ==}
 
@@ -7278,6 +7326,10 @@ packages:
 
   react@18.3.1:
     resolution: {integrity: sha512-wS+hAgJShR0KhEvPJArfuPVN1+Hz1t0Y6n5jLrGQbkb4urgPE/0Rve+1kMB1v/oWgHgm4WIcV+i7F2pTVj+2iQ==}
+    engines: {node: '>=0.10.0'}
+
+  react@19.1.1:
+    resolution: {integrity: sha512-w8nqGImo45dmMIfljjMwOGtbmC/mk4CMYhWIicdSflH91J9TyCyczcPFXJzrZ/ZXcgGRFeP6BU0BEJTw6tZdfQ==}
     engines: {node: '>=0.10.0'}
 
   read-pkg-up@7.0.1:
@@ -7608,6 +7660,9 @@ packages:
 
   scheduler@0.23.2:
     resolution: {integrity: sha512-UOShsPwz7NrMUqhR6t0hWjFduvOzbtv7toDH1/hIrfRNIDBnnBWd0CwJTGvTpngVlmwGCdP9/Zl/tVrDqcuYzQ==}
+
+  scheduler@0.26.0:
+    resolution: {integrity: sha512-NlHwttCI/l5gCPR3D1nNXtWABUmBwvZpEQiD4IXSbIDq8BzLIK/7Ir5gTFSGZDUu37K5cMNp0hFtzO38sC7gWA==}
 
   schema-utils@4.3.2:
     resolution: {integrity: sha512-Gn/JaSk/Mt9gYubxTtSn/QCV4em9mpAPiR1rqy/Ocu19u/G9J5WWdNoUT4SiV6mFC3y6cxyFcFwdzPM3FgxGAQ==}
@@ -9808,7 +9863,7 @@ snapshots:
       '@langchain/core': 0.1.63(openai@5.11.0(ws@8.14.2)(zod@4.0.14))
       uuid: 10.0.0
 
-  '@langchain/langgraph-sdk@0.0.105(@langchain/core@0.1.63(openai@5.11.0(ws@8.14.2)(zod@4.0.14)))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@langchain/langgraph-sdk@0.0.105(@langchain/core@0.1.63(openai@5.11.0(ws@8.14.2)(zod@4.0.14)))(react-dom@19.1.1(react@19.1.1))(react@19.1.1)':
     dependencies:
       '@types/json-schema': 7.0.15
       p-queue: 6.6.2
@@ -9816,14 +9871,14 @@ snapshots:
       uuid: 9.0.1
     optionalDependencies:
       '@langchain/core': 0.1.63(openai@5.11.0(ws@8.14.2)(zod@4.0.14))
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
+      react: 19.1.1
+      react-dom: 19.1.1(react@19.1.1)
 
-  '@langchain/langgraph@0.4.2(@langchain/core@0.1.63(openai@5.11.0(ws@8.14.2)(zod@4.0.14)))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(zod-to-json-schema@3.24.6(zod@4.0.14))':
+  '@langchain/langgraph@0.4.2(@langchain/core@0.1.63(openai@5.11.0(ws@8.14.2)(zod@4.0.14)))(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(zod-to-json-schema@3.24.6(zod@4.0.14))':
     dependencies:
       '@langchain/core': 0.1.63(openai@5.11.0(ws@8.14.2)(zod@4.0.14))
       '@langchain/langgraph-checkpoint': 0.1.0(@langchain/core@0.1.63(openai@5.11.0(ws@8.14.2)(zod@4.0.14)))
-      '@langchain/langgraph-sdk': 0.0.105(@langchain/core@0.1.63(openai@5.11.0(ws@8.14.2)(zod@4.0.14)))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@langchain/langgraph-sdk': 0.0.105(@langchain/core@0.1.63(openai@5.11.0(ws@8.14.2)(zod@4.0.14)))(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
       uuid: 10.0.0
       zod: 3.25.76
     optionalDependencies:
@@ -15905,6 +15960,11 @@ snapshots:
       react: 18.3.1
       scheduler: 0.23.2
 
+  react-dom@19.1.1(react@19.1.1):
+    dependencies:
+      react: 19.1.1
+      scheduler: 0.26.0
+
   react-fast-compare@3.2.2: {}
 
   react-helmet-async@1.3.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
@@ -16044,6 +16104,8 @@ snapshots:
   react@18.3.1:
     dependencies:
       loose-envify: 1.4.0
+
+  react@19.1.1: {}
 
   read-pkg-up@7.0.1:
     dependencies:
@@ -16437,6 +16499,8 @@ snapshots:
   scheduler@0.23.2:
     dependencies:
       loose-envify: 1.4.0
+
+  scheduler@0.26.0: {}
 
   schema-utils@4.3.2:
     dependencies:
