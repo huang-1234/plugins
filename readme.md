@@ -1,5 +1,10 @@
 # AI Code 项目架构设计与功能模块
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.8.3-blue.svg)](https://www.typescriptlang.org/)
+[![React](https://img.shields.io/badge/React-18.3.1-61dafb.svg)](https://reactjs.org/)
+[![Vite](https://img.shields.io/badge/Vite-6.0.0-646cff.svg)](https://vitejs.dev/)
+
 ## 项目概述
 
 AI Code 是一个综合性前端工具集项目，包含多个独立但相互关联的模块，主要聚焦于性能监控、文件处理和可视化工作流等领域。项目采用 monorepo 结构，使用 pnpm workspace 进行包管理，确保各模块间的依赖关系清晰且可维护。
