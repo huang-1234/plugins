@@ -100,7 +100,7 @@ export class PerformanceMonitor {
   }
 
   private getCPUCores(): number | undefined {
-    return (navigator as any)?.hardwareConcurrency;
+    return navigator?.hardwareConcurrency;
   }
 
   private initPerfTiming() {
