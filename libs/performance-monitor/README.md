@@ -13,11 +13,11 @@
 ## 安装
 
 ```bash
-npm install performance-monitor
+npm install perfor-monitor
 # 或
-yarn add performance-monitor
+yarn add perfor-monitor
 # 或
-pnpm add performance-monitor
+pnpm add perfor-monitor
 ```
 
 ## 基本使用
@@ -25,7 +25,7 @@ pnpm add performance-monitor
 ### 性能监控
 
 ```javascript
-import { PerformanceMonitor } from 'performance-monitor';
+import { PerformanceMonitor } from 'perfor-monitor';
 
 // 创建监控实例
 const monitor = new PerformanceMonitor({
@@ -61,7 +61,7 @@ monitor.dispose();
 ### 卡顿监控
 
 ```javascript
-import { PerformanceJankStutter } from 'performance-monitor';
+import { PerformanceJankStutter } from 'perfor-monitor';
 
 // 创建卡顿监控实例
 const jankMonitor = new PerformanceJankStutter({
@@ -90,7 +90,7 @@ jankMonitor.stopMonitoring();
 
 ```jsx
 import React, { useEffect } from 'react';
-import { PerformanceMonitor, PerformanceJankStutter } from 'performance-monitor';
+import { PerformanceMonitor, PerformanceJankStutter } from 'perfor-monitor';
 
 function App() {
   useEffect(() => {
@@ -135,7 +135,7 @@ function App() {
 </head>
 <body>
   <!-- 引入UMD格式的库 -->
-  <script src="path/to/performance-monitor.min.js"></script>
+  <script src="path/to/perfor-monitor.min.js"></script>
 
   <script>
     // 使用全局变量 PerformanceMonitor
@@ -156,43 +156,47 @@ function App() {
 
 #### 配置选项
 
-| 选项 | 类型 | 描述 |
-|------|------|------|
-| `appId` | string | 应用ID，用于标识不同应用 |
-| `reportUrl` | string | 性能数据上报地址 |
-| `debug` | boolean | 是否输出调试信息 |
-| `isDev` | boolean | 是否为开发环境 |
-| `maxTime` | number | 最大监控时间(ms) |
-| `deviceType` | 'mobile' \| 'desktop' \| 'auto' | 设备类型 |
-| `warnings` | object | 性能指标警告阈值 |
-| `pageInfo` | object | 页面信息 |
+
+| 选项         | 类型                           | 描述                     |
+| ------------ | ------------------------------ | ------------------------ |
+| `appId`      | string                         | 应用ID，用于标识不同应用 |
+| `reportUrl`  | string                         | 性能数据上报地址         |
+| `debug`      | boolean                        | 是否输出调试信息         |
+| `isDev`      | boolean                        | 是否为开发环境           |
+| `maxTime`    | number                         | 最大监控时间(ms)         |
+| `deviceType` | 'mobile'\| 'desktop' \| 'auto' | 设备类型                 |
+| `warnings`   | object                         | 性能指标警告阈值         |
+| `pageInfo`   | object                         | 页面信息                 |
 
 #### 方法
 
-| 方法 | 描述 |
-|------|------|
-| `start()` | 启动性能监控 |
-| `report()` | 生成并发送性能报告 |
-| `dispose()` | 清理资源 |
+
+| 方法        | 描述               |
+| ----------- | ------------------ |
+| `start()`   | 启动性能监控       |
+| `report()`  | 生成并发送性能报告 |
+| `dispose()` | 清理资源           |
 
 ### PerformanceJankStutter
 
 #### 配置选项
 
-| 选项 | 类型 | 描述 |
-|------|------|------|
-| `frame` | number | 帧率(ms)，默认16.67 |
-| `deviceRefreshRate` | number | 设备刷新率(Hz)，默认60 |
-| `minJankThreshold` | number | 小卡顿阈值(ms)，默认50 |
-| `largeJankThreshold` | number | 大卡顿阈值(ms)，默认100 |
-| `updateInterval` | number | 数据更新间隔(ms)，默认1000 |
+
+| 选项                 | 类型   | 描述                       |
+| -------------------- | ------ | -------------------------- |
+| `frame`              | number | 帧率(ms)，默认16.67        |
+| `deviceRefreshRate`  | number | 设备刷新率(Hz)，默认60     |
+| `minJankThreshold`   | number | 小卡顿阈值(ms)，默认50     |
+| `largeJankThreshold` | number | 大卡顿阈值(ms)，默认100    |
+| `updateInterval`     | number | 数据更新间隔(ms)，默认1000 |
 
 #### 方法
 
-| 方法 | 描述 |
-|------|------|
+
+| 方法                | 描述         |
+| ------------------- | ------------ |
 | `startMonitoring()` | 启动卡顿监控 |
-| `stopMonitoring()` | 停止卡顿监控 |
+| `stopMonitoring()`  | 停止卡顿监控 |
 
 ## 许可证
 
